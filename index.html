@@ -11,10 +11,10 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
 <style>
 :root {
-    --theme-color: #ff8c00;
-    --theme-glow: rgba(255, 140, 0, 0.4);
-    --theme-glow-light: rgba(255, 140, 0, 0.15);
-    --theme-glow-medium: rgba(255, 140, 0, 0.3);
+    --theme-color: #ffd700;
+    --theme-glow: rgba(255, 215, 0, 0.4);
+    --theme-glow-light: rgba(255, 215, 0, 0.15);
+    --theme-glow-medium: rgba(255, 215, 0, 0.3);
 }
 
 * {
@@ -278,6 +278,22 @@ html, body {
     transition: background 0.3s, box-shadow 0.3s;
 }
 
+.custom-cursor.dodge-mode {
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 0;
+    background-image: url('https://p7.hiclipart.com/preview/748/953/283/doge-clip-art-dog.jpg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    box-shadow: none;
+}
+
+.custom-cursor.dodge-mode::after {
+    display: none;
+}
+
 .settings-panel {
     position: fixed;
     top: 0;
@@ -299,29 +315,31 @@ html, body {
     background: #1a0f05;
     border: 2px solid var(--theme-color);
     border-radius: 16px;
-    padding: 28px;
-    width: 320px;
+    padding: 24px;
+    width: 360px;
+    max-height: 85vh;
+    overflow-y: auto;
     box-shadow: 0 0 30px var(--theme-glow-light);
     transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .settings-content h3 {
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     color: var(--theme-color);
     text-align: center;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     transition: color 0.3s;
 }
 
 .theme-option {
     width: 100%;
-    padding: 12px;
-    margin-bottom: 10px;
+    padding: 10px;
+    margin-bottom: 8px;
     background: #2a1a0a;
     border: 2px solid var(--theme-color);
     border-radius: 10px;
     color: #fff;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     display: flex;
     align-items: center;
@@ -333,7 +351,7 @@ html, body {
 .theme-option:hover {
     background: var(--theme-color);
     color: #000;
-    transform: translateY(-2px);
+    transform: translateY(-1px);
 }
 
 .theme-option.active-theme {
@@ -344,7 +362,7 @@ html, body {
 
 .close-settings {
     width: 100%;
-    margin-top: 10px;
+    margin-top: 8px;
     height: 40px;
     background: transparent;
     border: 2px solid var(--theme-color);
@@ -409,6 +427,33 @@ html, body {
         <button class="theme-option" id="juniorTheme" onclick="setTheme('junior')">
             <i class="fas fa-fire"></i> Junior the Coolbird
         </button>
+        <button class="theme-option" id="chefTheme" onclick="setTheme('chef')">
+            <i class="fas fa-utensils"></i> Chef Pee Pee Buns Food
+        </button>
+        <button class="theme-option" id="mikuTheme" onclick="setTheme('miku')">
+            <i class="fas fa-music"></i> Miku
+        </button>
+        <button class="theme-option" id="neruTheme" onclick="setTheme('neru')">
+            <i class="fas fa-sun"></i> Neru
+        </button>
+        <button class="theme-option" id="dodgeTheme" onclick="setTheme('dodge')">
+            <i class="fas fa-dog"></i> Dodge
+        </button>
+        <button class="theme-option" id="sigmacatTheme" onclick="setTheme('sigmacat')">
+            <i class="fas fa-cat"></i> Sigma Cat
+        </button>
+        <button class="theme-option" id="codyTheme" onclick="setTheme('cody')">
+            <i class="fas fa-flask"></i> Cody
+        </button>
+        <button class="theme-option" id="josephTheme" onclick="setTheme('joseph')">
+            <i class="fas fa-basketball"></i> Joseph
+        </button>
+        <button class="theme-option" id="marvinTheme" onclick="setTheme('marvin')">
+            <i class="fas fa-angry"></i> Marvin
+        </button>
+        <button class="theme-option" id="anyaTheme" onclick="setTheme('anya')">
+            <i class="fas fa-heart"></i> Anya
+        </button>
         <button class="close-settings" id="closeSettings">Close</button>
     </div>
 </div>
@@ -424,8 +469,17 @@ html, body {
     <button class="nav-btn" id="closeBtn"><i class="fas fa-xmark"></i></button>
 </div>
 
-<img src="/mnt/agents/upload/OIP__6_-removebg-preview.png" class="theme-image" id="jeffyImage" alt="Jeffy">
-<img src="/mnt/agents/upload/OIP__7_-removebg-preview.png" class="theme-image" id="juniorImage" alt="Junior">
+<img src="https://www.clipartmax.com/png/small/267-2677922_jeffy-francios-sml-jeffy-puppet-with-pencil-up-his-nose.png" class="theme-image" id="jeffyImage" alt="Jeffy">
+<img src="https://th.bing.com/th/id/R.805e87d05b4d881410fcd35448aa9706?rik=NkVbRfTN5Qn7eA&pid=ImgRaw&r=0" class="theme-image" id="juniorImage" alt="Junior">
+<img src="https://th.bing.com/th/id/OIP.UTY-xcuC-Rknqy2cpBd-CwHaKZ?w=133&h=186&c=7&r=0&o=7&pid=1.7&rm=3" class="theme-image" id="chefImage" alt="Chef Pee Pee">
+<img src="https://frogiesarcade.win/stuff/themes/miku/miku.png" class="theme-image" id="mikuImage" alt="Miku">
+<img src="https://frogiesarcade.win/stuff/themes/neru/neru.png" class="theme-image" id="neruImage" alt="Neru">
+<img src="https://th.bing.com/th/id/OIP.h_XPKT23aQFYvs7l4mgZrQHaHZ?w=170&h=180&c=7&r=0&o=7&pid=1.7&rm=3" class="theme-image" id="dodgeImage" alt="Dodge">
+<img src="https://tse2.mm.bing.net/th/id/OIP.bw62m-7tR4JCQV-nuLuLUQHaHM?rs=1&pid=ImgDetMain&o=7&rm=3" class="theme-image" id="sigmaImage" alt="Sigma Cat">
+<img src="https://th.bing.com/th/id/OIP.A38OrwKZ_3tdwP9ua9fQTgAAAA?w=201&h=309&c=7&r=0&o=7&pid=1.7&rm=3" class="theme-image" id="codyImage" alt="Cody">
+<img src="https://th.bing.com/th/id/OIP.RX9nis91G8hUha5y7tc9hgAAAA?w=159&h=350&c=7&r=0&o=7&pid=1.7&rm=3" class="theme-image" id="josephImage" alt="Joseph">
+<img src="https://th.bing.com/th/id/OIP.qd9qIa6ZAYv4nN4-oYxmWAAAAA?w=124&h=211&c=7&r=0&o=7&pid=1.7&rm=3" class="theme-image" id="marvinImage" alt="Marvin">
+<img src="https://www.pngpacks.com/uploads/data/1850/IMG_Sov0Q13TOoNz.png" class="theme-image" id="anyaImage" alt="Anya">
 
 <script>
 navigator.serviceWorker?.register("/uv/sw.js");
@@ -449,6 +503,69 @@ const themes = {
         glowLight: 'rgba(255, 140, 0, 0.15)',
         glowMedium: 'rgba(255, 140, 0, 0.3)',
         image: 'juniorImage'
+    },
+    chef: {
+        color: '#ffffff',
+        glow: 'rgba(255, 255, 255, 0.4)',
+        glowLight: 'rgba(255, 255, 255, 0.15)',
+        glowMedium: 'rgba(255, 255, 255, 0.3)',
+        image: 'chefImage'
+    },
+    miku: {
+        color: '#00ffff',
+        glow: 'rgba(0, 255, 255, 0.4)',
+        glowLight: 'rgba(0, 255, 255, 0.15)',
+        glowMedium: 'rgba(0, 255, 255, 0.3)',
+        image: 'mikuImage'
+    },
+    neru: {
+        color: '#ffffe0',
+        glow: 'rgba(255, 255, 224, 0.4)',
+        glowLight: 'rgba(255, 255, 224, 0.15)',
+        glowMedium: 'rgba(255, 255, 224, 0.3)',
+        image: 'neruImage'
+    },
+    dodge: {
+        color: '#ffd700',
+        glow: 'rgba(255, 215, 0, 0.4)',
+        glowLight: 'rgba(255, 215, 0, 0.15)',
+        glowMedium: 'rgba(255, 215, 0, 0.3)',
+        image: 'dodgeImage'
+    },
+    sigmacat: {
+        color: '#333333',
+        glow: 'rgba(100, 100, 100, 0.4)',
+        glowLight: 'rgba(100, 100, 100, 0.15)',
+        glowMedium: 'rgba(100, 100, 100, 0.3)',
+        image: 'sigmaImage'
+    },
+    cody: {
+        color: '#1e90ff',
+        glow: 'rgba(30, 144, 255, 0.4)',
+        glowLight: 'rgba(30, 144, 255, 0.15)',
+        glowMedium: 'rgba(30, 144, 255, 0.3)',
+        image: 'codyImage'
+    },
+    joseph: {
+        color: '#32cd32',
+        glow: 'rgba(50, 205, 50, 0.4)',
+        glowLight: 'rgba(50, 205, 50, 0.15)',
+        glowMedium: 'rgba(50, 205, 50, 0.3)',
+        image: 'josephImage'
+    },
+    marvin: {
+        color: '#ff0000',
+        glow: 'rgba(255, 0, 0, 0.4)',
+        glowLight: 'rgba(255, 0, 0, 0.15)',
+        glowMedium: 'rgba(255, 0, 0, 0.3)',
+        image: 'marvinImage'
+    },
+    anya: {
+        color: '#ff69b4',
+        glow: 'rgba(255, 105, 180, 0.4)',
+        glowLight: 'rgba(255, 105, 180, 0.15)',
+        glowMedium: 'rgba(255, 105, 180, 0.3)',
+        image: 'anyaImage'
     }
 };
 
@@ -462,21 +579,21 @@ function setTheme(themeName) {
     root.style.setProperty('--theme-glow-light', t.glowLight);
     root.style.setProperty('--theme-glow-medium', t.glowMedium);
     
-    document.getElementById('jeffyTheme').classList.toggle('active-theme', themeName === 'jeffy');
-    document.getElementById('juniorTheme').classList.toggle('active-theme', themeName === 'junior');
+    Object.keys(themes).forEach(key => {
+        const btn = document.getElementById(key + 'Theme');
+        if (btn) btn.classList.toggle('active-theme', themeName === key);
+    });
     
-    document.getElementById('jeffyImage').classList.toggle('active', themeName === 'jeffy');
-    document.getElementById('juniorImage').classList.toggle('active', themeName === 'junior');
+    Object.keys(themes).forEach(key => {
+        const img = document.getElementById(themes[key].image);
+        if (img) img.classList.toggle('active', themeName === key);
+    });
+    
+    const cursor = document.getElementById('cursor');
+    cursor.classList.toggle('dodge-mode', themeName === 'dodge');
 }
 
 setTheme('jeffy');
-
-function hexToRgba(hex, alpha) {
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
-    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-}
 
 const quotes = [
     "If you see this quote, I broke my code - UNBL0CKEDZ0NE",
@@ -697,21 +814,28 @@ for (let i = 0; i < 120; i++) {
     particlesArray.push(new Particle());
 }
 
+function getRgbFromHex(hex) {
+    if (hex.startsWith('#')) {
+        return {
+            r: parseInt(hex.slice(1, 3), 16),
+            g: parseInt(hex.slice(3, 5), 16),
+            b: parseInt(hex.slice(5, 7), 16)
+        };
+    }
+    return { r: 255, g: 255, b: 255 };
+}
+
 function pConnect() {
     const color = getComputedStyle(document.documentElement).getPropertyValue('--theme-color').trim();
+    const rgb = getRgbFromHex(color);
+    
     for (let a = 0; a < particlesArray.length; a++) {
         for (let b = a; b < particlesArray.length; b++) {
             let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x))
                 + ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
             if (distance < (pWidth/7) * (pHeight/7)) {
                 let opacity = 1 - (distance / 20000);
-                pCtx.strokeStyle = color.replace(')', `, ${opacity})`).replace('rgb', 'rgba').replace('#', '');
-                if (color.startsWith('#')) {
-                    const r = parseInt(color.slice(1, 3), 16);
-                    const g = parseInt(color.slice(3, 5), 16);
-                    const b = parseInt(color.slice(5, 7), 16);
-                    pCtx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${opacity})`;
-                }
+                pCtx.strokeStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${opacity})`;
                 pCtx.lineWidth = 1;
                 pCtx.beginPath();
                 pCtx.moveTo(particlesArray[a].x, particlesArray[a].y);
@@ -781,22 +905,16 @@ class RainDrop {
 
     draw() {
         const color = getComputedStyle(document.documentElement).getPropertyValue('--theme-color').trim();
-        let r, g, b;
-        if (color.startsWith('#')) {
-            r = parseInt(color.slice(1, 3), 16);
-            g = parseInt(color.slice(3, 5), 16);
-            b = parseInt(color.slice(5, 7), 16);
-        } else {
-            r = 255; g = 140; b = 0;
-        }
+        const rgb = getRgbFromHex(color);
+        
         rCtx.beginPath();
         rCtx.moveTo(this.x, this.y);
         rCtx.lineTo(this.x, this.y + this.length);
-        rCtx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${this.opacity})`;
+        rCtx.strokeStyle = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${this.opacity})`;
         rCtx.lineWidth = this.width;
         rCtx.lineCap = "round";
         rCtx.shadowBlur = 6;
-        rCtx.shadowColor = `rgba(${r}, ${g}, ${b}, ${this.opacity * 0.6})`;
+        rCtx.shadowColor = `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${this.opacity * 0.6})`;
         rCtx.stroke();
         rCtx.shadowBlur = 0;
     }
