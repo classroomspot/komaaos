@@ -1,343 +1,771 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>koma proxy</title>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UNBLOCKEDZONE</title>
 <script src="/uv/uv.bundle.js"></script>
 <script src="/uv/uv.config.js"></script>
 <script src="/baremux/index.js"></script>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
-
 <style>
-* { box-sizing: border-box; font-family: Inter, system-ui; }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', system-ui, sans-serif;
+}
 
 html, body {
-    margin: 0;
     width: 100%;
     height: 100%;
-    background: #000000;
+    background: #0a0500;
     overflow: hidden;
+    color: #fff;
 }
 
-/* ===== TOP BAR ===== */
-.browser-ui {
-    height: 96px;
-    background: #2b2b2b;
+#particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+#rain {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
-    border-bottom: 1px solid #000000;
-    z-index: 10;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
 }
 
-/* ===== TABS ===== */
-.tabs {
-    height: 38px;
+.logo {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #ff8c00;
+    text-shadow: 0 0 20px rgba(255, 140, 0, 0.4);
+    margin-bottom: 12px;
     display: flex;
     align-items: center;
-    padding: 0 8px;
-    gap: 6px;
-    overflow-x: auto;
+    gap: 12px;
+    letter-spacing: 1px;
 }
 
-.tab {
-    height: 28px;
-    min-width: 160px;
-    max-width: 220px;
-    padding: 0 12px;
-    border-radius: 8px 8px 0 0;
-    background: #212121;
-    color: #ddd;
+.subtitle {
+    font-size: 1rem;
+    color: #b0b0b0;
+    font-style: italic;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.quote-box {
+    min-height: 28px;
+    margin-bottom: 25px;
+    text-align: center;
+    max-width: 600px;
+}
+
+.quote-text {
+    font-size: 0.95rem;
+    color: #ff8c00;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    text-shadow: 0 0 10px rgba(255, 140, 0, 0.3);
+}
+
+.quote-text.visible {
+    opacity: 1;
+}
+
+.search-wrapper {
     display: flex;
     align-items: center;
     gap: 8px;
-    cursor: pointer;
+    width: 100%;
+    max-width: 520px;
 }
 
-.tab.active {
-    background: #151515;
-    color: white;
-}
-
-.tab span {
+.search-box {
     flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.tab i {
-    opacity: .6;
-}
-.tab i:hover {
-    opacity: 1;
-    color: #ff6b6b;
-}
-
-.newtab {
-    width: 32px;
-    height: 32px;
-    border-radius: 6px;
-    border: none;
-    background: transparent;
-    color: #aaa;
-    cursor: pointer;
-}
-.newtab:hover { background: #444; }
-
-/* ===== NAV BAR ===== */
-.navbar {
-    height: 58px;
+    height: 48px;
+    background: #1a0f05;
+    border: 2px solid #ff8c00;
+    border-radius: 12px;
+    padding: 0 18px;
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 0 12px;
+    box-shadow: 0 0 15px rgba(255, 140, 0, 0.15);
+    transition: box-shadow 0.3s ease;
 }
 
-.navbar button {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    border: none;
-    background: transparent;
-    color: #bbb;
-    cursor: pointer;
-}
-.navbar button:hover {
-    background: #3a3a3a;
-    color: white;
+.search-box:focus-within {
+    box-shadow: 0 0 25px rgba(255, 140, 0, 0.3);
 }
 
-/* ===== URL BAR ===== */
-.urlbar {
-    flex: 1;
-    height: 36px;
-    background: #161616;
-    border-radius: 18px;
-    padding: 0 16px;
-    display: flex;
-    align-items: center;
-    color:white;
-}
-
-.urlbar input {
+.search-box input {
     width: 100%;
     height: 100%;
     background: transparent;
     border: none;
     outline: none;
-    color: white;
-    font-size: 14px;
+    color: #fff;
+    font-size: 15px;
 }
 
-/* ===== VIEWPORT ===== */
-.viewframe {
-    position: absolute;
-    top: 96px;
+.search-box input::placeholder {
+    color: #666;
+}
+
+.icon-btn {
+    width: 48px;
+    height: 48px;
+    background: #1a0f05;
+    border: 2px solid #ff8c00;
+    border-radius: 12px;
+    color: #ff8c00;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 15px rgba(255, 140, 0, 0.15);
+    transition: all 0.2s ease;
+}
+
+.icon-btn:hover {
+    background: #ff8c00;
+    color: #000;
+    box-shadow: 0 0 25px rgba(255, 140, 0, 0.4);
+}
+
+.loading-screen {
+    position: fixed;
+    top: 0;
     left: 0;
     width: 100%;
-    height: calc(100% - 96px);
-    border: none;
+    height: 100%;
+    background: #0a0500;
+    z-index: 200;
     display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.loading-screen.active {
+    display: flex;
+}
+
+.loading-gif {
+    width: 300px;
+    height: 300px;
+    object-fit: contain;
+    margin-bottom: 20px;
+}
+
+.loading-text {
+    font-size: 1.5rem;
+    color: #ff8c00;
+    font-weight: 600;
+    text-shadow: 0 0 15px rgba(255, 140, 0, 0.5);
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.viewframe {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 60px);
+    border: none;
+    z-index: 100;
+    display: none;
+    background: #000;
 }
 
 .viewframe.active {
     display: block;
 }
 
-/* ===== NTP ===== */
-.ntp {
-    position: absolute;
-    top: 96px;
+.bottom-bar {
+    position: fixed;
+    bottom: 0;
     left: 0;
     width: 100%;
-    height: calc(100% - 96px);
+    height: 60px;
+    background: #1a1a1a;
+    border-top: 1px solid #333;
+    z-index: 101;
+    display: none;
+    align-items: center;
+    padding: 0 15px;
+    gap: 10px;
+}
+
+.bottom-bar.active {
+    display: flex;
+}
+
+.nav-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: #aaa;
+    font-size: 14px;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #ffffff;
-    pointer-events: none;
+}
+
+.nav-btn:hover {
+    background: #333;
+    color: #fff;
+}
+
+.address-bar {
+    flex: 1;
+    height: 38px;
+    background: #2a2a2a;
+    border-radius: 20px;
+    padding: 0 15px;
+    display: flex;
+    align-items: center;
+    color: #fff;
+    font-size: 14px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.tab-strip {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 38px;
+    background: #1a1a1a;
+    z-index: 102;
+    display: none;
+    align-items: center;
+    padding: 0 10px;
+    gap: 8px;
+    border-bottom: 1px solid #333;
+}
+
+.tab-strip.active {
+    display: flex;
+}
+
+.tab-item {
+    height: 30px;
+    min-width: 150px;
+    max-width: 200px;
+    background: #2a2a2a;
+    border-radius: 8px 8px 0 0;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #ccc;
+    cursor: pointer;
+}
+
+.tab-item span {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tab-item i {
+    font-size: 10px;
+    opacity: 0.6;
+}
+
+.tab-item i:hover {
+    opacity: 1;
+    color: #ff4444;
+}
+
+.tab-item.active {
+    background: #3a3a3a;
+    color: #fff;
+}
+
+.close-browser {
+    position: fixed;
+    top: 6px;
+    right: 10px;
+    z-index: 103;
+    display: none;
+    width: 26px;
+    height: 26px;
+    background: transparent;
+    border: none;
+    color: #aaa;
+    font-size: 16px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-browser.active {
+    display: flex;
+}
+
+.close-browser:hover {
+    color: #ff4444;
 }
 </style>
+<base target="_blank">
 </head>
-
 <body>
 
-<div class="browser-ui">
-    <div class="tabs" id="tabs">
-        <button class="newtab" id="newtab"><i class="fas fa-plus"></i></button>
+<canvas id="particles"></canvas>
+<canvas id="rain"></canvas>
+
+<div class="container" id="mainPage">
+    <div class="logo">
+        <span>🎮</span>
+        <span>UNBLOCKEDZONE!</span>
+        <span>💻</span>
     </div>
 
-    <div class="navbar">
-        <button id="back"><i class="fas fa-arrow-left"></i></button>
-        <button id="forward"><i class="fas fa-arrow-right"></i></button>
-        <button id="reload"><i class="fas fa-rotate-right"></i></button>
+    <div class="subtitle">
+        Join the Discord, Follow the TikTok, and subscribe to the YouTube! - UNBLOCKEDZONE
+    </div>
 
-        <form class="urlbar" id="form">
-            <input id="url" placeholder="Search or enter address">
-        </form>
+    <div class="quote-box">
+        <div class="quote-text visible" id="quoteDisplay"></div>
+    </div>
 
-        <button id="popout"><i class="fas fa-external-link"></i></button>
+    <form class="search-wrapper" id="searchForm">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search For Games! V3.8S - Up to Date!" autocomplete="off">
+        </div>
+        <button type="submit" class="icon-btn">
+            <i class="fas fa-magnifying-glass"></i>
+        </button>
+        <button type="button" class="icon-btn" id="settingsBtn">
+            <i class="fas fa-gear"></i>
+        </button>
+    </form>
+</div>
+
+<div class="loading-screen" id="loadingScreen">
+    <img src="https://c.tenor.com/PDVHdZ0XYJoAAAAd/tenor.gif" class="loading-gif" alt="Loading">
+    <div class="loading-text">Loading...</div>
+</div>
+
+<div class="tab-strip" id="tabStrip">
+    <div class="tab-item active" id="browserTab">
+        <i class="fas fa-lock"></i>
+        <span id="tabTitle">New Tab</span>
+        <i class="fas fa-xmark" id="closeTab"></i>
     </div>
 </div>
 
-<div class="ntp" id="ntp">
-    <h1>koma proxy</h1>
+<button class="close-browser" id="closeBrowser"><i class="fas fa-xmark"></i></button>
+
+<iframe class="viewframe" id="viewframe" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"></iframe>
+
+<div class="bottom-bar" id="bottomBar">
+    <button class="nav-btn" id="backBtn"><i class="fas fa-arrow-left"></i></button>
+    <button class="nav-btn" id="forwardBtn"><i class="fas fa-arrow-right"></i></button>
+    <button class="nav-btn" id="reloadBtn"><i class="fas fa-rotate-right"></i></button>
+    <div class="address-bar" id="addressBar">https://unblockedzone.com</div>
+    <button class="nav-btn" id="homeBtn"><i class="fas fa-house"></i></button>
+    <button class="nav-btn" id="newTabBtn"><i class="fas fa-plus"></i></button>
 </div>
 
 <script>
-navigator.serviceWorker?.register("/uv/sw.js")
+navigator.serviceWorker?.register("/uv/sw.js");
 
-const connection = new BareMux.BareMuxConnection("/baremux/worker.js")
-connection.setTransport("/libcurl/index.mjs", [{ websocket: "wss://wisp.rhw.one/" }])
+const connection = new BareMux.BareMuxConnection("/baremux/worker.js");
+connection.setTransport("/libcurl/index.mjs", [{ websocket: "wss://wisp.rhw.one/" }]);
 
-const tabsEl = document.getElementById("tabs")
-const newTabBtn = document.getElementById("newtab")
-const urlInput = document.getElementById("url")
-const ntp = document.getElementById("ntp")
+const quotes = [
+    "If you see this quote, I broke my code - UNBL0CKEDZ0NE",
+    "Rattler is kinda good, if you know, you know. - UberMint64",
+    "fortnite  please  🍕🍕🍕🍕 - Matias 12/11/24",
+    "the site got leaked again - UberMint64",
+    "If you rub an magnet next to a Chromebook, it will turn off. - UNBL0CKEDZ0NE",
+    "Press Ctrl Shift W to close all windows. - UNBL0CKEDZ0NE",
+    "Ctrl Shift T brings back that window. - UNBL0CKEDZ0NE",
+    "rub your Chromebook for good luck - UNBL0CKEDZ0NE",
+    "Delete System32 for storage - muffled",
+    "Why Partner with me? - muffled",
+    "its not my fault if you block this link. - UNBL0CKEDZ0NE",
+    "Join the Discord, follow the TikTok, and subscribe to the YouTube! - UNBL0CKEDZ0NE",
+    "Use Scratch to listen to music! - UNBL0CKEDZ0NE",
+    "UberMint64 has 64 in his name. (SM64 Reference?) - UNBL0CKEDZ0NE",
+    "Use my forms so I can make this the best possible site! - UNBL0CKEDZ0NE",
+    "I hope these quotes are in order - UNBL0CKEDZ0NE",
+    "To eat, you must put food in your mouth. - UberMint64",
+    "Shoutout to UberMint64- UNBL0CKEDZ0NE",
+    "You should add a bunch of games from other game sites to look like you site is superior - Isaiah",
+    "Pepsi man - jaedon",
+    "chicken war - Henry",
+    "this is for dis site - muffled_lemon (btw they are not muffled)",
+    "I just wanted to say thank for adding YoungBoy - izeah",
+    "Console - Restarting Quotes ⟳ [ETA - 5s]"
+];
 
-let tabs = []
-let activeId = null
-let idCounter = 0
+let quoteIndex = 0;
+const quoteDisplay = document.getElementById("quoteDisplay");
 
-function createTab(url = "") {
-    const id = idCounter++
-
-    const iframe = document.createElement("iframe")
-    iframe.className = "viewframe"
-    iframe.dataset.id = id
-
-    iframe.setAttribute("sandbox",
-        "allow-scripts allow-same-origin allow-forms allow-modals allow-popups"
-    )
-
-    document.body.appendChild(iframe)
-
-    const tabBtn = document.createElement("div")
-    tabBtn.className = "tab"
-    tabBtn.dataset.id = id
-    tabBtn.innerHTML = `<span>New Tab</span><i class="fas fa-xmark"></i>`
-
-    tabBtn.addEventListener("click", e => {
-        if (e.target.tagName === "I") closeTab(id)
-        else activateTab(id)
-    })
-
-    tabsEl.insertBefore(tabBtn, newTabBtn)
-
-    tabs.push({ id, iframe, tabBtn, history: [], index: -1 })
-    activateTab(id)
-
-    if (url) navigate(url)
+function rotateQuote() {
+    quoteDisplay.classList.remove("visible");
+    setTimeout(() => {
+        quoteDisplay.textContent = quotes[quoteIndex];
+        quoteDisplay.classList.add("visible");
+        quoteIndex = (quoteIndex + 1) % quotes.length;
+    }, 500);
 }
 
-function activateTab(id) {
-    activeId = id
-
-    tabs.forEach(t => {
-        t.iframe.classList.toggle("active", t.id === id)
-        t.tabBtn.classList.toggle("active", t.id === id)
-    })
-
-    const tab = getTab()
-    if (!tab) return
-
-    if (tab.index >= 0) {
-        urlInput.value = tab.history[tab.index]
-        ntp.style.display = "none"
-    } else {
-        urlInput.value = ""
-        ntp.style.display = "flex"
-    }
-}
-
-function closeTab(id) {
-    if (tabs.length === 1) return
-
-    const i = tabs.findIndex(t => t.id === id)
-    const tab = tabs[i]
-
-    tab.iframe.remove()
-    tab.tabBtn.remove()
-    tabs.splice(i, 1)
-
-    activateTab(tabs[Math.max(0, i - 1)].id)
-}
+rotateQuote();
+setInterval(rotateQuote, 5000);
 
 function normalize(input) {
     if (!input.includes(".")) {
-        return "https://search.brave.com/search?q=" + encodeURIComponent(input)
+        return "https://search.brave.com/search?q=" + encodeURIComponent(input);
     }
-    if (!input.startsWith("http")) return "https://" + input
-    return input
+    if (!input.startsWith("http")) return "https://" + input;
+    return input;
 }
 
-function navigate(input, push = true) {
-    const tab = getTab()
-    if (!tab) return
+const searchForm = document.getElementById("searchForm");
+const searchInput = document.getElementById("searchInput");
+const mainPage = document.getElementById("mainPage");
+const loadingScreen = document.getElementById("loadingScreen");
+const viewframe = document.getElementById("viewframe");
+const tabStrip = document.getElementById("tabStrip");
+const bottomBar = document.getElementById("bottomBar");
+const closeBrowser = document.getElementById("closeBrowser");
+const addressBar = document.getElementById("addressBar");
+const tabTitle = document.getElementById("tabTitle");
 
-    const url = normalize(input)
+searchForm.onsubmit = (e) => {
+    e.preventDefault();
+    const val = searchInput.value.trim();
+    if (!val) return;
 
-    if (push) {
-        tab.history = tab.history.slice(0, tab.index + 1)
-        tab.history.push(url)
-        tab.index++
+    mainPage.style.display = "none";
+    loadingScreen.classList.add("active");
+
+    const url = normalize(val);
+    const encoded = __uv$config.prefix + __uv$config.encodeUrl(url);
+
+    setTimeout(() => {
+        viewframe.src = encoded;
+        addressBar.textContent = url;
+
+        viewframe.onload = () => {
+            loadingScreen.classList.remove("active");
+            viewframe.classList.add("active");
+            tabStrip.classList.add("active");
+            bottomBar.classList.add("active");
+            closeBrowser.classList.add("active");
+
+            try {
+                const title = viewframe.contentDocument?.title || new URL(url).hostname;
+                tabTitle.textContent = title;
+            } catch(e) {
+                tabTitle.textContent = new URL(url).hostname;
+            }
+        };
+    }, 2000);
+};
+
+document.getElementById("closeBrowser").onclick = () => {
+    viewframe.classList.remove("active");
+    tabStrip.classList.remove("active");
+    bottomBar.classList.remove("active");
+    closeBrowser.classList.remove("active");
+    mainPage.style.display = "flex";
+    viewframe.src = "";
+    searchInput.value = "";
+};
+
+document.getElementById("closeTab").onclick = (e) => {
+    e.stopPropagation();
+    viewframe.classList.remove("active");
+    tabStrip.classList.remove("active");
+    bottomBar.classList.remove("active");
+    closeBrowser.classList.remove("active");
+    mainPage.style.display = "flex";
+    viewframe.src = "";
+    searchInput.value = "";
+};
+
+document.getElementById("backBtn").onclick = () => {
+    viewframe.contentWindow.history.back();
+};
+
+document.getElementById("forwardBtn").onclick = () => {
+    viewframe.contentWindow.history.forward();
+};
+
+document.getElementById("reloadBtn").onclick = () => {
+    viewframe.src = viewframe.src;
+};
+
+document.getElementById("homeBtn").onclick = () => {
+    viewframe.classList.remove("active");
+    tabStrip.classList.remove("active");
+    bottomBar.classList.remove("active");
+    closeBrowser.classList.remove("active");
+    mainPage.style.display = "flex";
+    viewframe.src = "";
+    searchInput.value = "";
+};
+
+document.getElementById("newTabBtn").onclick = () => {
+    viewframe.classList.remove("active");
+    tabStrip.classList.remove("active");
+    bottomBar.classList.remove("active");
+    closeBrowser.classList.remove("active");
+    mainPage.style.display = "flex";
+    viewframe.src = "";
+    searchInput.value = "";
+    searchInput.focus();
+};
+
+document.getElementById("settingsBtn").onclick = () => {
+    alert("Settings panel coming soon!");
+};
+
+const mouse = { x: null, y: null, radius: 150 };
+
+window.addEventListener("mousemove", (e) => {
+    mouse.x = e.x;
+    mouse.y = e.y;
+});
+
+window.addEventListener("mouseout", () => {
+    mouse.x = null;
+    mouse.y = null;
+});
+
+const pCanvas = document.getElementById("particles");
+const pCtx = pCanvas.getContext("2d");
+let pWidth, pHeight;
+
+function pResize() {
+    pWidth = pCanvas.width = window.innerWidth;
+    pHeight = pCanvas.height = window.innerHeight;
+}
+
+pResize();
+window.addEventListener("resize", pResize);
+
+class Particle {
+    constructor() {
+        this.x = Math.random() * pWidth;
+        this.y = Math.random() * pHeight;
+        this.vx = (Math.random() - 0.5) * 1.5;
+        this.vy = (Math.random() - 0.5) * 1.5;
+        this.size = Math.random() * 3 + 1;
+        this.baseX = this.x;
+        this.baseY = this.y;
+        this.density = (Math.random() * 30) + 1;
     }
 
-    tab.iframe.src = __uv$config.prefix + __uv$config.encodeUrl(url)
-    urlInput.value = url
-    ntp.style.display = "none"
+    update() {
+        if (mouse.x != null) {
+            let dx = mouse.x - this.x;
+            let dy = mouse.y - this.y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+            let forceDirectionX = dx / distance;
+            let forceDirectionY = dy / distance;
+            let maxDistance = mouse.radius;
+            let force = (maxDistance - distance) / maxDistance;
+            let directionX = forceDirectionX * force * this.density;
+            let directionY = forceDirectionY * force * this.density;
 
-    tab.iframe.onload = () => {
-        tab.tabBtn.querySelector("span").textContent =
-            tab.iframe.contentDocument?.title || new URL(url).hostname
+            if (distance < mouse.radius) {
+                this.x -= directionX;
+                this.y -= directionY;
+            } else {
+                if (this.x !== this.baseX) {
+                    let dx = this.x - this.baseX;
+                    this.x -= dx / 20;
+                }
+                if (this.y !== this.baseY) {
+                    let dy = this.y - this.baseY;
+                    this.y -= dy / 20;
+                }
+            }
+        } else {
+            if (this.x !== this.baseX) {
+                let dx = this.x - this.baseX;
+                this.x -= dx / 20;
+            }
+            if (this.y !== this.baseY) {
+                let dy = this.y - this.baseY;
+                this.y -= dy / 20;
+            }
+        }
+
+        this.baseX += this.vx;
+        this.baseY += this.vy;
+
+        if (this.baseX < 0 || this.baseX > pWidth) this.vx = -this.vx;
+        if (this.baseY < 0 || this.baseY > pHeight) this.vy = -this.vy;
+
+        this.x += this.vx * 0.3;
+        this.y += this.vy * 0.3;
+    }
+
+    draw() {
+        pCtx.beginPath();
+        pCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        pCtx.fillStyle = "#ff8c00";
+        pCtx.shadowBlur = 10;
+        pCtx.shadowColor = "rgba(255, 140, 0, 0.8)";
+        pCtx.fill();
+        pCtx.shadowBlur = 0;
     }
 }
 
-function getTab() {
-    return tabs.find(t => t.id === activeId)
+const particlesArray = [];
+for (let i = 0; i < 120; i++) {
+    particlesArray.push(new Particle());
 }
 
-/* ===== CONTROLS ===== */
-back.onclick = () => {
-    const t = getTab()
-    if (!t || t.index <= 0) return
-    t.index--
-    navigate(t.history[t.index], false)
+function pConnect() {
+    for (let a = 0; a < particlesArray.length; a++) {
+        for (let b = a; b < particlesArray.length; b++) {
+            let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x))
+                + ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+            if (distance < (pWidth/7) * (pHeight/7)) {
+                let opacity = 1 - (distance / 20000);
+                pCtx.strokeStyle = "rgba(255, 140, 0," + opacity + ")";
+                pCtx.lineWidth = 1;
+                pCtx.beginPath();
+                pCtx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                pCtx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                pCtx.stroke();
+            }
+        }
+    }
 }
 
-forward.onclick = () => {
-    const t = getTab()
-    if (!t || t.index >= t.history.length - 1) return
-    t.index++
-    navigate(t.history[t.index], false)
+function pAnimate() {
+    pCtx.clearRect(0, 0, pWidth, pHeight);
+    for (let i = 0; i < particlesArray.length; i++) {
+        particlesArray[i].update();
+        particlesArray[i].draw();
+    }
+    pConnect();
+    requestAnimationFrame(pAnimate);
 }
 
-reload.onclick = () => {
-    const t = getTab()
-    if (!t) return
-    t.iframe.src = t.iframe.src
+pAnimate();
+
+const rCanvas = document.getElementById("rain");
+const rCtx = rCanvas.getContext("2d");
+let rWidth, rHeight;
+
+function rResize() {
+    rWidth = rCanvas.width = window.innerWidth;
+    rHeight = rCanvas.height = window.innerHeight;
 }
 
-popout.onclick = () => {
-    const t = getTab()
-    if (!t) return
-    window.open(t.iframe.src, "_blank")
+rResize();
+window.addEventListener("resize", rResize);
+
+class RainDrop {
+    constructor() {
+        this.reset();
+    }
+
+    reset() {
+        this.x = Math.random() * rWidth;
+        this.y = Math.random() * -rHeight;
+        this.length = Math.random() * 20 + 10;
+        this.speed = Math.random() * 8 + 5;
+        this.opacity = Math.random() * 0.5 + 0.2;
+        this.width = Math.random() * 1.5 + 0.5;
+    }
+
+    update() {
+        this.y += this.speed;
+
+        if (mouse.x != null) {
+            let dx = mouse.x - this.x;
+            let dy = mouse.y - this.y;
+            let distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < 100) {
+                let force = (100 - distance) / 100;
+                this.x -= (dx / distance) * force * 5;
+            }
+        }
+
+        if (this.y > rHeight + this.length) {
+            this.reset();
+        }
+    }
+
+    draw() {
+        rCtx.beginPath();
+        rCtx.moveTo(this.x, this.y);
+        rCtx.lineTo(this.x, this.y + this.length);
+        rCtx.strokeStyle = `rgba(255, 140, 0, ${this.opacity})`;
+        rCtx.lineWidth = this.width;
+        rCtx.lineCap = "round";
+        rCtx.shadowBlur = 6;
+        rCtx.shadowColor = `rgba(255, 140, 0, ${this.opacity * 0.6})`;
+        rCtx.stroke();
+        rCtx.shadowBlur = 0;
+    }
 }
 
-form.onsubmit = e => {
-    e.preventDefault()
-    if (urlInput.value.trim()) navigate(urlInput.value)
+const rainArray = [];
+for (let i = 0; i < 150; i++) {
+    rainArray.push(new RainDrop());
 }
 
-newTabBtn.onclick = () => createTab()
+function rAnimate() {
+    rCtx.clearRect(0, 0, rWidth, rHeight);
+    for (let i = 0; i < rainArray.length; i++) {
+        rainArray[i].update();
+        rainArray[i].draw();
+    }
+    requestAnimationFrame(rAnimate);
+}
 
-createTab()
+rAnimate();
 </script>
 
 </body>
 </html>
-
