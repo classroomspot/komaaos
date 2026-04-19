@@ -272,7 +272,7 @@ body.no-rainbow *{animation-name:none!important}
     font-family: 'Pixelify Sans', monospace, sans-serif;
 }
 
-/* ─── BROWSER UI ─── */
+/* ─── BROWSER / TABS UI ─── */
 .viewframe {
     position: fixed;
     top: 38px;
@@ -303,15 +303,27 @@ body.no-rainbow *{animation-name:none!important}
     border-bottom: 1px solid var(--accent);
     box-shadow: 0 0 10px var(--accent-glow);
     animation: rainbow-glow 8s linear infinite;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent) transparent;
 }
 .tab-strip.active {
     display: flex;
 }
+.tab-strip::-webkit-scrollbar {
+    height: 4px;
+}
+.tab-strip::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 2px;
+}
 
 .tab-item {
     height: 30px;
-    min-width: 150px;
-    max-width: 200px;
+    min-width: 140px;
+    max-width: 180px;
     background: rgba(255,102,0,0.1);
     border-radius: 8px 8px 0 0;
     padding: 0 12px;
@@ -324,6 +336,8 @@ body.no-rainbow *{animation-name:none!important}
     font-family: 'Pixelify Sans', monospace, sans-serif;
     border: 1px solid var(--accent);
     border-bottom: none;
+    flex-shrink: 0;
+    position: relative;
 }
 .tab-item span {
     flex: 1;
@@ -331,17 +345,20 @@ body.no-rainbow *{animation-name:none!important}
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-.tab-item i {
+.tab-item .close-tab-btn {
     font-size: 10px;
     opacity: 0.6;
+    padding: 4px;
+    margin-right: -4px;
 }
-.tab-item i:hover {
+.tab-item .close-tab-btn:hover {
     opacity: 1;
     color: #ff4444;
 }
 .tab-item.active {
-    background: rgba(255,102,0,0.2);
+    background: rgba(255,102,0,0.25);
     color: #fff;
+    box-shadow: 0 0 8px var(--accent-glow);
 }
 
 .close-browser {
@@ -406,6 +423,7 @@ body.no-rainbow *{animation-name:none!important}
     justify-content: center;
     transition: all .2s;
     box-shadow: 0 0 6px var(--accent-glow);
+    flex-shrink: 0;
 }
 .nav-btn:hover {
     background: var(--accent-glow-soft);
@@ -489,7 +507,7 @@ body.no-rainbow *{animation-name:none!important}
     <div id="catchphrase">🎮 UNBL0CKEDZ0NE! 💻</div>
     <div id="quote">Loading quotes...</div>
     <div id="search-container">
-      <input id="search-bar" placeholder="Search for G4mes! V3.9 - Up to Date!" autocomplete="off">
+      <input id="search-bar" placeholder="Search with DuckDuckGo! V4.0 - Up to Date!" autocomplete="off">
       <!-- Search icon button -->
       <button id="search-button" class="icon-btn" title="Search">
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -566,25 +584,17 @@ body.no-rainbow *{animation-name:none!important}
 </div>
 
 <!-- Browser UI -->
-<div class="tab-strip" id="tabStrip">
-    <div class="tab-item active" id="browserTab">
-        <i class="fas fa-lock"></i>
-        <span id="tabTitle">New Tab</span>
-        <i class="fas fa-xmark" id="closeTab"></i>
-    </div>
-</div>
+<div class="tab-strip" id="tabStrip"></div>
 
 <button class="close-browser" id="closeBrowser"><i class="fas fa-xmark"></i></button>
-
-<iframe class="viewframe" id="viewframe" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"></iframe>
 
 <div class="bottom-bar" id="bottomBar">
     <button class="nav-btn" id="backBtn"><i class="fas fa-arrow-left"></i></button>
     <button class="nav-btn" id="forwardBtn"><i class="fas fa-arrow-right"></i></button>
     <button class="nav-btn" id="reloadBtn"><i class="fas fa-rotate-right"></i></button>
     <div class="address-bar" id="addressBar">https://unblockedzone.com</div>
-    <button class="nav-btn" id="homeBtn"><i class="fas fa-house"></i></button>
-    <button class="nav-btn" id="newTabBtn"><i class="fas fa-plus"></i></button>
+    <button class="nav-btn" id="homeBtn" title="Home"><i class="fas fa-house"></i></button>
+    <button class="nav-btn" id="newTabBtn" title="New Tab"><i class="fas fa-plus"></i></button>
 </div>
 
 <!-- Hidden audio element -->
@@ -599,98 +609,197 @@ navigator.serviceWorker?.register("/uv/sw.js");
 const connection = new BareMux.BareMuxConnection("/baremux/worker.js");
 connection.setTransport("/libcurl/index.mjs", [{ websocket: "wss://wisp.rhw.one/" }]);
 
-// ─── DOM REFS ───
+// ─── TAB SYSTEM ───
+const tabs = [];
+let activeTabId = null;
+let tabCounter = 0;
+const HOME_URL = "https://sites.google.com/view/g0sfwfs-vocm0dlfe/home";
+
 const mainUi = document.getElementById("mainUi");
 const loadingScreen = document.getElementById("loadingScreen");
-const viewframe = document.getElementById("viewframe");
 const tabStrip = document.getElementById("tabStrip");
 const bottomBar = document.getElementById("bottomBar");
 const closeBrowserBtn = document.getElementById("closeBrowser");
 const addressBar = document.getElementById("addressBar");
-const tabTitle = document.getElementById("tabTitle");
 const searchBar = document.getElementById("search-bar");
 
-// ─── URL NORMALIZE ───
 function normalize(input) {
     if (!input.includes(".")) {
-        return "https://search.brave.com/search?q=" + encodeURIComponent(input);
+        return "https://duckduckgo.com/?q=" + encodeURIComponent(input);
     }
     if (!input.startsWith("http")) return "https://" + input;
     return input;
 }
 
-// ─── SEARCH HANDLER ───
+function encodeUrl(url) {
+    return __uv$config.prefix + __uv$config.encodeUrl(url);
+}
+
+function createTab(rawUrl, title = "New Tab") {
+    // Hide main UI, show browser chrome
+    mainUi.classList.add("hidden");
+    tabStrip.classList.add("active");
+    bottomBar.classList.add("active");
+    closeBrowserBtn.classList.add("active");
+
+    const id = ++tabCounter;
+    const tabEl = document.createElement("div");
+    tabEl.className = "tab-item";
+    tabEl.dataset.tabId = id;
+    tabEl.innerHTML = `<i class="fas fa-lock"></i><span>${title}</span><i class="fas fa-xmark close-tab-btn"></i>`;
+
+    tabEl.addEventListener("click", (e) => {
+        if (!e.target.classList.contains("close-tab-btn")) switchTab(id);
+    });
+
+    tabEl.querySelector(".close-tab-btn").addEventListener("click", (e) => {
+        e.stopPropagation();
+        closeTab(id);
+    });
+
+    tabStrip.appendChild(tabEl);
+
+    const iframe = document.createElement("iframe");
+    iframe.className = "viewframe";
+    iframe.sandbox = "allow-scripts allow-same-origin allow-forms allow-modals allow-popups";
+    iframe.dataset.tabId = id;
+    document.body.appendChild(iframe);
+
+    const proxyUrl = encodeUrl(rawUrl);
+    tabs.push({ id, el: tabEl, iframe, url: rawUrl, title });
+    switchTab(id);
+
+    iframe.src = proxyUrl;
+
+    iframe.onload = () => {
+        loadingScreen.classList.remove("active");
+        let newTitle = rawUrl;
+        try {
+            newTitle = iframe.contentDocument?.title || new URL(rawUrl).hostname;
+        } catch (e) {
+            newTitle = rawUrl;
+        }
+        updateTabTitle(id, newTitle);
+    };
+
+    return id;
+}
+
+function switchTab(id) {
+    const tab = tabs.find(t => t.id === id);
+    if (!tab) return;
+
+    if (activeTabId) {
+        const current = tabs.find(t => t.id === activeTabId);
+        if (current) {
+            current.el.classList.remove("active");
+            current.iframe.classList.remove("active");
+        }
+    }
+
+    activeTabId = id;
+    tab.el.classList.add("active");
+    tab.iframe.classList.add("active");
+    addressBar.textContent = tab.url;
+}
+
+function closeTab(id) {
+    const idx = tabs.findIndex(t => t.id === id);
+    if (idx === -1) return;
+
+    const tab = tabs[idx];
+    tab.el.remove();
+    tab.iframe.remove();
+    tabs.splice(idx, 1);
+
+    if (tabs.length === 0) {
+        activeTabId = null;
+        tabStrip.classList.remove("active");
+        bottomBar.classList.remove("active");
+        closeBrowserBtn.classList.remove("active");
+        mainUi.classList.remove("hidden");
+        loadingScreen.classList.remove("active");
+        searchBar.value = "";
+    } else {
+        const nextIdx = idx < tabs.length ? idx : tabs.length - 1;
+        switchTab(tabs[nextIdx].id);
+    }
+}
+
+function updateTabTitle(id, title) {
+    const tab = tabs.find(t => t.id === id);
+    if (!tab) return;
+    tab.title = title;
+    tab.el.querySelector("span").textContent = title;
+}
+
+function navigateActiveTab(rawUrl) {
+    if (!activeTabId) {
+        loadingScreen.classList.add("active");
+        createTab(rawUrl);
+        return;
+    }
+    const tab = tabs.find(t => t.id === activeTabId);
+    const proxyUrl = encodeUrl(rawUrl);
+    tab.iframe.src = proxyUrl;
+    tab.url = rawUrl;
+    addressBar.textContent = rawUrl;
+    tab.iframe.onload = () => {
+        let newTitle = rawUrl;
+        try {
+            newTitle = tab.iframe.contentDocument?.title || new URL(rawUrl).hostname;
+        } catch (e) {
+            newTitle = rawUrl;
+        }
+        updateTabTitle(activeTabId, newTitle);
+    };
+}
+
+// ─── SEARCH ───
 function doSearch() {
     const val = searchBar.value.trim();
     if (!val) return;
-    
-    mainUi.classList.add("hidden");
-    loadingScreen.classList.add("active");
-    
     const url = normalize(val);
-    const encoded = __uv$config.prefix + __uv$config.encodeUrl(url);
-    
-    setTimeout(() => {
-        viewframe.src = encoded;
-        addressBar.textContent = url;
-        
-        viewframe.onload = () => {
-            loadingScreen.classList.remove("active");
-            viewframe.classList.add("active");
-            tabStrip.classList.add("active");
-            bottomBar.classList.add("active");
-            closeBrowserBtn.classList.add("active");
-            
-            try {
-                const title = viewframe.contentDocument?.title || new URL(url).hostname;
-                tabTitle.textContent = title;
-            } catch(e) {
-                tabTitle.textContent = new URL(url).hostname;
-            }
-        };
-    }, 2000);
+    loadingScreen.classList.add("active");
+    createTab(url);
 }
 
 document.getElementById("search-button").onclick = doSearch;
 searchBar.addEventListener("keypress", e => { if (e.key === "Enter") doSearch(); });
 
 // ─── BROWSER CONTROLS ───
-function closeBrowser() {
-    viewframe.classList.remove("active");
-    tabStrip.classList.remove("active");
-    bottomBar.classList.remove("active");
-    closeBrowserBtn.classList.remove("active");
-    mainUi.classList.remove("hidden");
-    viewframe.src = "";
-    searchBar.value = "";
-}
-
-document.getElementById("closeBrowser").onclick = closeBrowser;
-document.getElementById("closeTab").onclick = (e) => {
-    e.stopPropagation();
-    closeBrowser();
+document.getElementById("closeBrowser").onclick = () => {
+    while (tabs.length > 0) closeTab(tabs[0].id);
 };
 
 document.getElementById("backBtn").onclick = () => {
-    viewframe.contentWindow.history.back();
+    if (!activeTabId) return;
+    const tab = tabs.find(t => t.id === activeTabId);
+    try { tab.iframe.contentWindow.history.back(); } catch (e) {}
 };
 
 document.getElementById("forwardBtn").onclick = () => {
-    viewframe.contentWindow.history.forward();
+    if (!activeTabId) return;
+    const tab = tabs.find(t => t.id === activeTabId);
+    try { tab.iframe.contentWindow.history.forward(); } catch (e) {}
 };
 
 document.getElementById("reloadBtn").onclick = () => {
-    viewframe.src = viewframe.src;
+    if (!activeTabId) return;
+    const tab = tabs.find(t => t.id === activeTabId);
+    tab.iframe.src = tab.iframe.src;
 };
 
-document.getElementById("homeBtn").onclick = closeBrowser;
+document.getElementById("homeBtn").onclick = () => {
+    navigateActiveTab(HOME_URL);
+};
 
 document.getElementById("newTabBtn").onclick = () => {
-    closeBrowser();
-    searchBar.focus();
+    loadingScreen.classList.add("active");
+    createTab(HOME_URL, "New Tab");
 };
 
-// ─── VISUAL EFFECTS (from message.txt) ───
+// ─── VISUAL EFFECTS ───
 function initMainSite() {
   const canvas = document.getElementById('bg-canvas');
   const ctx = canvas.getContext('2d');
