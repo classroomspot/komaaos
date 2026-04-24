@@ -298,70 +298,6 @@ canvas#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;po
   .top-nav{gap:12px}
 }
 
-/* ─── MUSIC PLAYER ─── */
-#music-player{
-  position:fixed;
-  bottom:175px;
-  right:18px;
-  z-index:50;
-  pointer-events:auto;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  background:rgba(8,4,0,.85);
-  border:1px solid var(--accent);
-  border-radius:10px;
-  padding:7px 12px;
-  box-shadow:0 0 12px var(--accent-glow);
-  animation:rainbow-glow 8s linear infinite;
-  font-size:.75rem;
-  color:var(--accent);
-  white-space:nowrap;
-}
-#music-player .track-name{
-  max-width:130px;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
-}
-#music-play-btn{
-  background:transparent;
-  border:1px solid var(--accent);
-  border-radius:6px;
-  color:var(--accent);
-  cursor:pointer;
-  width:28px;height:28px;
-  display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;
-  transition:background .15s;
-  padding:0;
-}
-#music-play-btn:hover{background:var(--accent-glow-soft)}
-#music-play-btn svg{width:14px;height:14px;display:block}
-#music-vol{
-  -webkit-appearance:none;appearance:none;
-  width:60px;height:4px;
-  border-radius:2px;
-  background:var(--accent-glow);
-  outline:none;cursor:pointer;
-  accent-color:var(--accent);
-}
-#music-vol::-webkit-slider-thumb{
-  -webkit-appearance:none;
-  width:12px;height:12px;
-  border-radius:50%;
-  background:var(--accent);
-  cursor:pointer;
-}
-#vol-pct{
-  font-size:.72rem;
-  color:var(--accent);
-  min-width:32px;
-  text-align:right;
-  white-space:nowrap;
-}
-.music-note-icon{font-size:1em;animation:rainbow-text 8s linear infinite}
-
 /* ─── LOADING SCREEN ─── */
 .loading-screen {
     position: fixed;
@@ -728,19 +664,6 @@ canvas#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;po
     </div>
   </div>
 
-  <div id="music-player">
-    <span class="music-note-icon">♫</span>
-    <span class="track-name">C418</span>
-    <button id="music-play-btn" title="Play / Pause">
-      <!-- Play icon (shown when paused) -->
-      <svg id="icon-play" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"></path></svg>
-      <!-- Pause icon (hidden when paused) -->
-      <svg id="icon-pause" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"></path></svg>
-    </button>
-    <input id="music-vol" type="range" min="0" max="1" step="0.01" value="0.4" title="Volume">
-    <span id="vol-pct">40%</span>
-  </div>
-
   <div id="custom-cursor"></div>
 </div>
 
@@ -769,11 +692,6 @@ canvas#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;po
     <button class="nav-btn" id="homeBtn" title="Home"><i class="fas fa-house"></i></button>
     <button class="nav-btn" id="newTabBtn" title="New Tab"><i class="fas fa-plus"></i></button>
 </div>
-
-<!-- Hidden audio element -->
-<audio id="bg-music" loop="">
-  <source src="https://cdn.jsdelivr.net/gh/UNBL0CKEDZ0NE/ubassets@main/c418music.mp3" type="audio/mpeg">
-</audio>
 
 <script>
 // ─── UV PROXY SETUP ───
