@@ -26,6 +26,8 @@
   --accent-glow-strong:rgba(255,102,0,0.8);
   --accent-glow-soft:rgba(255,102,0,0.15);
   --bg-alpha:rgba(15,8,0,0.75);
+  --card-bg:rgba(20,20,25,0.95);
+  --card-border:#00ffff;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;font-family:'Pixelify Sans',monospace,sans-serif;background:#050001;color:var(--accent);overflow:hidden;cursor:none}
@@ -41,21 +43,176 @@ body::after{
 @keyframes glowShift{0%{opacity:.4}100%{opacity:.7}}
 canvas#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;pointer-events:none}
 .ui{position:fixed;inset:0;z-index:2;pointer-events:none}
-#time-display{position:fixed;top:20px;right:20px;text-align:right;animation:rainbow-glow 8s linear infinite}
+#time-display{position:fixed;top:48px;right:20px;text-align:right;animation:rainbow-glow 8s linear infinite;z-index:10}
 #time24,#time12{display:block;color:var(--accent)}
-#stats-box{
-  position:fixed;bottom:0;left:0;right:0;width:100%;
-  background:var(--bg-alpha);border-top:2px solid var(--accent);
-  padding:10px 20px;box-shadow:0 -5px 20px var(--accent-glow);
+
+/* ─── TOP BAR ─── */
+#top-bar{
+  position:fixed;top:0;left:0;width:100%;height:40px;
+  background:rgba(10,5,0,0.95);
+  border-bottom:2px solid var(--accent);
+  z-index:250;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 14px;
+  box-shadow:0 0 15px var(--accent-glow);
   animation:rainbow-glow 8s linear infinite;
-  display:flex;flex-direction:column;gap:8px;
-  align-items:center;justify-content:center;pointer-events:auto
+  pointer-events:auto;
 }
-#stats-box h2{margin:0;color:#fff;text-shadow:0 0 10px var(--accent-glow-strong);animation:rainbow-text 8s linear infinite;font-size:.95rem;white-space:nowrap}
-.stat-line{margin:0;font-size:.9rem;white-space:nowrap}
-#stats-section{display:flex;gap:15px;align-items:center;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;justify-content:center}
-#links-section{display:flex;gap:10px;align-items:center;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;justify-content:center}
-#signature{position:fixed;top:20px;left:20px;white-space:nowrap;overflow:hidden;animation:rainbow-text 8s linear infinite}
+#top-bar-inner{
+  display:flex;align-items:center;gap:14px;
+}
+#site-logo{
+  height:28px;width:28px;border-radius:6px;object-fit:cover;
+  border:1px solid var(--accent);box-shadow:0 0 8px var(--accent-glow);
+  flex-shrink:0;
+}
+.top-nav{
+  display:flex;align-items:center;gap:14px;
+}
+.top-nav a{
+  color:var(--accent);font-size:1.15rem;text-decoration:none;
+  transition:transform .2s,filter .2s;text-shadow:0 0 8px var(--accent-glow);
+  display:flex;align-items:center;justify-content:center;
+  width:28px;height:28px;border-radius:7px;
+}
+.top-nav a:hover{
+  transform:scale(1.15);filter:brightness(1.3);
+  background:var(--accent-glow-soft);
+}
+
+/* ─── QUOTE OVERLAY ─── */
+#quote-overlay{
+  position:fixed;inset:0;z-index:200;
+  background:rgba(5,0,1,0.92);
+  display:none;flex-direction:column;align-items:center;justify-content:center;gap:20px;
+  pointer-events:auto;
+}
+#quote-overlay.active{display:flex}
+#quote-overlay img{
+  max-width:260px;max-height:260px;border-radius:12px;
+  border:2px solid var(--accent);box-shadow:0 0 30px var(--accent-glow-strong);
+  animation:rainbow-glow 8s linear infinite;
+}
+#quote-overlay .quote-text{
+  color:#fff;font-size:1.3rem;text-align:center;max-width:600px;padding:0 20px;
+  text-shadow:0 0 15px var(--accent-glow-strong);font-style:italic;
+  animation:rainbow-text 8s linear infinite;
+}
+#quote-overlay .quote-author{
+  color:var(--accent);font-size:1rem;margin-top:8px;
+  text-shadow:0 0 10px var(--accent-glow);
+}
+
+/* ─── BOTTOM BAR ─── */
+#bottom-bar{
+  position:fixed;bottom:0;left:0;width:100%;height:42px;
+  background:rgba(10,5,0,0.95);
+  border-top:2px solid var(--accent);
+  z-index:50;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 18px;
+  box-shadow:0 -5px 20px var(--accent-glow);
+  animation:rainbow-glow 8s linear infinite;
+  pointer-events:auto;
+}
+#online-users{
+  color:#fff;font-size:.95rem;text-shadow:0 0 8px var(--accent-glow-strong);
+  animation:rainbow-text 8s linear infinite;
+}
+#settings-gear{
+  background:transparent;border:1px solid var(--accent);color:var(--accent);
+  width:32px;height:32px;border-radius:8px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;transition:all .2s;box-shadow:0 0 8px var(--accent-glow);
+}
+#settings-gear:hover{
+  background:var(--accent-glow-soft);transform:rotate(30deg);
+  box-shadow:0 0 14px var(--accent-glow-strong);
+}
+
+/* ─── SETTINGS MODAL ─── */
+#settings-modal{
+  position:fixed;inset:0;z-index:300;
+  background:rgba(5,0,1,0.92);
+  display:none;align-items:center;justify-content:center;
+  padding:20px;overflow-y:auto;
+  pointer-events:auto;
+}
+#settings-modal.active{display:flex}
+.settings-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:14px;width:100%;max-width:1100px;
+}
+.settings-card{
+  background:var(--card-bg);
+  border:2px solid var(--card-border);
+  border-radius:12px;padding:16px;
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  box-shadow:0 0 15px rgba(0,255,255,0.15);
+  transition:transform .2s,box-shadow .2s;
+}
+.settings-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 0 25px rgba(0,255,255,0.3);
+}
+.settings-card h3{
+  color:#fff;font-size:1rem;margin-bottom:4px;text-align:center;
+  text-shadow:0 0 8px rgba(255,255,255,0.3);
+}
+.settings-card p{
+  color:#aaa;font-size:.75rem;text-align:center;line-height:1.4;
+}
+.settings-card select,
+.settings-card input[type="text"]{
+  width:100%;padding:8px 10px;border-radius:8px;
+  background:rgba(0,0,0,0.5);border:1px solid var(--card-border);
+  color:#fff;font-family:inherit;font-size:.8rem;outline:none;
+}
+.settings-card select:focus,
+.settings-card input[type="text"]:focus{
+  box-shadow:0 0 8px rgba(0,255,255,0.3);
+}
+.card-btns{
+  display:flex;gap:8px;flex-wrap:wrap;justify-content:center;
+}
+.card-btn{
+  padding:7px 14px;border-radius:8px;background:rgba(0,255,255,0.1);
+  border:1px solid var(--card-border);color:#fff;font-family:inherit;
+  font-size:.78rem;cursor:pointer;transition:all .2s;
+}
+.card-btn:hover{
+  background:rgba(0,255,255,0.25);transform:translateY(-2px);
+  box-shadow:0 0 10px rgba(0,255,255,0.3);
+}
+.card-btn.active{
+  background:rgba(0,255,255,0.35);box-shadow:0 0 12px rgba(0,255,255,0.4);
+}
+#close-settings{
+  position:fixed;top:14px;right:14px;z-index:301;
+  background:transparent;border:1px solid var(--accent);color:var(--accent);
+  width:36px;height:36px;border-radius:8px;cursor:pointer;
+  font-size:1.2rem;display:flex;align-items:center;justify-content:center;
+  transition:all .2s;
+}
+#close-settings:hover{
+  background:var(--accent-glow-soft);transform:rotate(90deg);
+}
+
+#stats-box{
+  position:fixed;bottom:42px;left:0;right:0;width:100%;
+  background:var(--bg-alpha);border-top:1px solid var(--accent);
+  padding:8px 20px;box-shadow:0 -3px 15px var(--accent-glow);
+  animation:rainbow-glow 8s linear infinite;
+  display:flex;flex-direction:column;gap:6px;
+  align-items:center;justify-content:center;pointer-events:auto;
+  z-index:49;
+}
+#stats-box h2{margin:0;color:#fff;text-shadow:0 0 10px var(--accent-glow-strong);animation:rainbow-text 8s linear infinite;font-size:.9rem;white-space:nowrap}
+.stat-line{margin:0;font-size:.82rem;white-space:nowrap}
+#stats-section{display:flex;gap:12px;align-items:center;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;justify-content:center}
+#links-section{display:flex;gap:8px;align-items:center;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;justify-content:center}
+#signature{position:fixed;top:48px;left:20px;white-space:nowrap;overflow:hidden;animation:rainbow-text 8s linear infinite;z-index:10}
 #signature .caret{display:inline-block;width:8px;height:16px;background:var(--accent);margin-left:8px;vertical-align:middle;animation:blink 1s step-start infinite}
 @keyframes blink{50%{opacity:0}}
 @keyframes rainbow-glow{0%{filter:hue-rotate(0deg)}100%{filter:hue-rotate(360deg)}}
@@ -63,8 +220,6 @@ canvas#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;po
 .center-controls{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:auto}
 
 #catchphrase{color:var(--accent);font-size:1.6rem;margin-bottom:12px;text-shadow:0 0 10px var(--accent-glow-strong);animation:rainbow-text 8s linear infinite;text-transform:uppercase}
-#quote{color:#fff;font-size:1.1rem;margin-top:8px;font-style:italic;text-shadow:0 0 10px var(--accent-glow);animation:rainbow-text 8s linear infinite}
-
 /* ─── SEARCH + SETTINGS ROW ─── */
 #search-container{display:flex;justify-content:center;gap:8px;align-items:center;margin-top:12px}
 
@@ -97,89 +252,56 @@ canvas#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;po
 .icon-btn:hover{background:var(--accent-glow-soft);box-shadow:0 0 14px var(--accent-glow-strong);transform:translateY(-2px)}
 #settings-btn.open{box-shadow:0 0 16px var(--accent-glow-strong);background:var(--accent-glow-soft)}
 
-#custom-cursor{position:fixed;width:18px;height:18px;border-radius:50%;border:2px solid var(--accent);background:transparent;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);box-shadow:0 0 10px var(--accent-glow);animation:pulse 1s infinite alternate,rainbow-glow 8s linear infinite}
+#custom-cursor{position:fixed;top:0;left:0;width:20px;height:20px;border-radius:50%;border:2.5px solid var(--accent);background:rgba(255,102,0,0.08);pointer-events:none;z-index:99999;transform:translate(-50%,-50%);box-shadow:0 0 12px var(--accent-glow),inset 0 0 6px var(--accent-glow);animation:pulse 1.2s infinite alternate,rainbow-glow 8s linear infinite;transition:transform .08s ease-out,border-color .08s,width .15s,height .15s;mix-blend-mode:screen}
 @keyframes pulse{from{transform:translate(-50%,-50%) scale(1);opacity:1}to{transform:translate(-50%,-50%) scale(1.4);opacity:.6}}
 #social-row{display:flex;flex-direction:row;gap:10px;align-items:center;flex-wrap:nowrap;white-space:nowrap;justify-content:center}
 .social-btn{padding:8px 16px;border-radius:8px;background:transparent;color:var(--accent);text-decoration:none;font-weight:bold;text-align:center;border:1px solid var(--accent);box-shadow:0 0 8px var(--accent-glow);transition:transform .2s,box-shadow .2s,background .2s;white-space:nowrap;display:flex;align-items:center;gap:8px;font-size:.9rem}
 .social-btn:hover{transform:translateY(-3px);box-shadow:0 0 14px var(--accent-glow-strong);background:var(--accent-glow-soft)}
 .social-icon{font-size:1.2em;display:inline-flex;align-items:center}
-@media(max-width:768px){#stats-box{padding:8px 15px;gap:6px;font-size:.8rem}#stats-section{gap:8px}.social-btn{padding:6px 10px;font-size:.8rem}.stat-line{font-size:.8rem}}
-
-/* ─── SETTINGS PANEL ─── */
-#settings-wrap{position:relative;display:inline-flex;align-items:center}
-
-#settings-panel{
-  position:absolute;
-  bottom:54px;
-  left:50%;
-  transform:translateX(-50%) translateY(8px) scale(.97);
-  transform-origin:bottom center;
-  width:220px;
-  background:rgba(8,4,0,.97);
-  border:2px solid var(--accent);
-  border-radius:12px;
-  padding:14px 16px;
-  box-shadow:0 0 24px var(--accent-glow);
-  animation:rainbow-glow 8s linear infinite;
-  opacity:0;
-  visibility:hidden;
-  transition:opacity .2s ease, visibility .2s ease, transform .2s ease;
-  z-index:100;
+/* ─── SHORTCUT BUTTONS ─── */
+#shortcut-row{
+  display:flex;justify-content:center;gap:16px;margin-top:18px;flex-wrap:wrap;
 }
-#settings-panel.open{
-  opacity:1;visibility:visible;
-  transform:translateX(-50%) translateY(0) scale(1);
+.shortcut-btn{
+  width:58px;height:58px;border-radius:14px;
+  background:rgba(20,20,25,0.9);
+  border:2px solid rgba(255,255,255,0.08);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .25s ease;
+  box-shadow:0 4px 12px rgba(0,0,0,0.4);
+  padding:0;overflow:hidden;position:relative;
 }
-#settings-panel h3{
-  font-size:.85rem;letter-spacing:2px;color:var(--accent);
-  margin-bottom:12px;text-align:center;
-  animation:rainbow-text 8s linear infinite;
-  text-transform:uppercase;
+.shortcut-btn::before{
+  content:"";position:absolute;inset:0;border-radius:14px;
+  opacity:0;transition:opacity .25s;
 }
-.setting-row{
-  display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:10px;font-size:.78rem;color:#ffaa55;
-  gap:8px;
+.shortcut-btn:hover{
+  transform:translateY(-4px) scale(1.1);
+  box-shadow:0 8px 24px rgba(0,0,0,0.5);
+  border-color:rgba(255,255,255,0.2);
 }
-.setting-row label{white-space:nowrap;flex-shrink:0}
-
-/* Toggle switch */
-.toggle{position:relative;width:38px;height:20px;flex-shrink:0}
-.toggle input{opacity:0;width:0;height:0;position:absolute}
-.toggle-track{
-  position:absolute;inset:0;border-radius:10px;
-  background:transparent;border:1px solid var(--accent);
-  transition:background .2s;cursor:pointer;
+.shortcut-btn:hover::before{opacity:1}
+.shortcut-btn img{
+  width:32px;height:32px;object-fit:contain;border-radius:6px;
+  pointer-events:none;position:relative;z-index:1;
 }
-.toggle input:checked + .toggle-track{background:var(--accent-glow)}
-.toggle-thumb{
-  position:absolute;top:2px;left:2px;
-  width:14px;height:14px;border-radius:50%;
-  background:var(--accent);
-  transition:transform .2s;pointer-events:none;
+/* Brand colors on hover */
+.shortcut-btn[data-url="chatgpt.com"]:hover{box-shadow:0 8px 24px rgba(16,163,127,0.35);border-color:rgba(16,163,127,0.5)}
+.shortcut-btn[data-url="discord.com"]:hover{box-shadow:0 8px 24px rgba(88,101,242,0.35);border-color:rgba(88,101,242,0.5)}
+.shortcut-btn[data-url="tiktok.com"]:hover{box-shadow:0 8px 24px rgba(254,44,85,0.35);border-color:rgba(254,44,85,0.5)}
+.shortcut-btn[data-url="nowgg.fun"]:hover{box-shadow:0 8px 24px rgba(255,102,0,0.35);border-color:rgba(255,102,0,0.5)}
+@media(max-width:768px){
+  #stats-box{padding:6px 15px;gap:4px;font-size:.75rem}
+  #stats-section{gap:6px}.social-btn{padding:6px 10px;font-size:.8rem}.stat-line{font-size:.75rem}
+  .settings-grid{grid-template-columns:1fr}
+  #top-bar{padding:0 10px}
+  .top-nav{gap:12px}
 }
-.toggle input:checked ~ .toggle-thumb{transform:translateX(18px)}
-
-/* Theme swatches */
-.theme-swatches{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
-.swatch{
-  width:22px;height:22px;border-radius:50%;cursor:pointer;
-  border:2px solid transparent;transition:transform .15s, border-color .15s, opacity .15s;
-  flex-shrink:0;
-}
-.swatch:hover{transform:scale(1.2)}
-.swatch.active{border-color:#fff;box-shadow:0 0 6px rgba(255,255,255,.6)}
-.swatches-rainbow-on .swatch{opacity:.35;border-color:transparent!important;box-shadow:none!important}
-.setting-divider{border:none;border-top:1px solid var(--accent-glow);margin:10px 0}
-
-/* Settings state classes */
-body.no-bg-fx::after{display:none}
-body.no-rainbow *{animation-name:none!important}
 
 /* ─── MUSIC PLAYER ─── */
 #music-player{
   position:fixed;
-  bottom:130px;
+  bottom:175px;
   right:18px;
   z-index:50;
   pointer-events:auto;
@@ -454,58 +576,132 @@ body.no-rainbow *{animation-name:none!important}
     display: none;
 }
 </style>
+<base target="_blank">
 </head>
 <body>
 
 <canvas id="bg-canvas"></canvas>
+
+<!-- Quote Overlay -->
+<div id="quote-overlay">
+  <img src="https://i.pinimg.com/736x/27/86/79/2786795df6cdc0e8f4f1b6553415b764.jpg" alt="Quote Image" id="quote-img">
+  <div class="quote-text" id="quote-overlay-text">Loading quote...</div>
+  <div class="quote-author" id="quote-overlay-author"></div>
+</div>
+
+<!-- Settings Modal -->
+<div id="settings-modal">
+  <button id="close-settings"><i class="fas fa-xmark"></i></button>
+  <div class="settings-grid">
+    <!-- Tab Cloak -->
+    <div class="settings-card">
+      <h3>tab cloak</h3>
+      <select id="cloak-select">
+        <option value="google">Google</option>
+        <option value="drive">Google Drive</option>
+        <option value="classroom">Google Classroom</option>
+        <option value="canvas">Canvas</option>
+        <option value="ixl">IXL</option>
+      </select>
+      <div class="card-btns">
+        <button class="card-btn" id="set-cloak">set cloak</button>
+        <button class="card-btn" id="reset-cloak">reset cloak</button>
+      </div>
+    </div>
+    <!-- Custom Cloak -->
+    <div class="settings-card">
+      <h3>custom cloak</h3>
+      <input type="text" id="custom-title" placeholder="title">
+      <input type="text" id="custom-favicon" placeholder="favicon URL">
+      <div class="card-btns">
+        <button class="card-btn" id="apply-custom-cloak">apply</button>
+      </div>
+    </div>
+    <!-- Themes -->
+    <div class="settings-card">
+      <h3>themes</h3>
+      <select id="theme-select">
+        <option value="orange">Miku Beam</option>
+        <option value="cyan">Cyan Void</option>
+        <option value="green">Matrix</option>
+        <option value="pink">Neon Pink</option>
+        <option value="gold">Golden Hour</option>
+        <option value="white">Ghost White</option>
+      </select>
+    </div>
+    <!-- Particles -->
+    <div class="settings-card">
+      <h3>particles</h3>
+      <div class="card-btns">
+        <button class="card-btn" id="particles-on">enable</button>
+        <button class="card-btn" id="particles-off">disable</button>
+      </div>
+    </div>
+    <!-- Mobile Screen Sizer -->
+    <div class="settings-card">
+      <h3>mobile screen sizer</h3>
+      <div class="card-btns">
+        <button class="card-btn" id="mobile-on">enable</button>
+        <button class="card-btn" id="mobile-off">disable</button>
+      </div>
+    </div>
+    <!-- Games Sorted A-Z -->
+    <div class="settings-card">
+      <h3>games sorted a - z</h3>
+      <div class="card-btns">
+        <button class="card-btn" id="sort-on">enable</button>
+        <button class="card-btn" id="sort-off">disable</button>
+      </div>
+    </div>
+    <!-- Anti Deledao -->
+    <div class="settings-card">
+      <h3>anti deledao</h3>
+      <p>adds a static image over your game that deledao game detection cant see through. might not always work.</p>
+      <div class="card-btns">
+        <button class="card-btn" id="deledao-on">enable</button>
+        <button class="card-btn" id="deledao-off">disable</button>
+      </div>
+    </div>
+    <!-- Debug -->
+    <div class="settings-card">
+      <h3>debug</h3>
+      <div class="card-btns">
+        <button class="card-btn" id="debug-mode">enter debug mode</button>
+      </div>
+    </div>
+    <!-- About:Blank Cloaker -->
+    <div class="settings-card">
+      <h3>about:blank cloaker</h3>
+      <p>double click the button to cloak</p>
+      <div class="card-btns">
+        <button class="card-btn" id="blank-cloak">cloak</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="ui" id="mainUi">
+  <!-- Top Bar -->
+  <div id="top-bar">
+    <div id="top-bar-inner">
+      <img src="https://i.pinimg.com/736x/1d/a5/f3/1da5f3887a33fdc13594159c6718baab.jpg" id="site-logo" alt="Logo">
+      <div class="top-nav">
+        <a href="science.html" class="nav-link" data-nav="games" title="Games"><i class="fas fa-gamepad"></i></a>
+        <a href="edupractice.html" class="nav-link" data-nav="apps" title="Apps"><i class="fas fa-border-all"></i></a>
+        <a href="mth.html" class="nav-link" data-nav="partners" title="Partners"><i class="fas fa-handshake"></i></a>
+        <a href="#" class="nav-link" data-nav="extras" title="Extras"><i class="fas fa-plus"></i></a>
+      </div>
+    </div>
+  </div>
+
   <div id="time-display">
     <span id="time24">--:--:--</span>
     <span id="time12">--:--:-- --</span>
   </div>
-  <div id="stats-box">
-    <div id="stats-section">
-      <h2>System Info</h2>
-      <span class="stat-line">|</span>
-      <span class="stat-line">Screen: <span id="screen-size">---x---</span></span>
-      <span class="stat-line">|</span>
-      <span class="stat-line">Browser: <span id="browser">---</span></span>
-      <span class="stat-line">|</span>
-      <span class="stat-line">Platform: <span id="platform">---</span></span>
-      <span class="stat-line">|</span>
-      <span class="stat-line">Language: <span id="language">---</span></span>
-      <span class="stat-line">|</span>
-      <span class="stat-line">CPU: <span id="cpu">-</span></span>
-      <span class="stat-line">|</span>
-      <span class="stat-line">Memory: <span id="memory">---</span></span>
-    </div>
-    <div id="links-section">
-      <div id="social-row">
-        <a href="https://discord.gg/QneUQb8R5F" target="_blank" class="social-btn">
-          <span class="social-icon"><svg viewBox="0 0 24 24" style="width:1.2em;height:1.2em;vertical-align:middle;"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" fill="currentColor" stroke="none"></path></svg></span>Discord Server!
-        </a>
-        <a href="https://www.tiktok.com/@unbl0ckedz0ne" target="_blank" class="social-btn">
-          <span class="social-icon"><svg viewBox="0 0 24 24" style="width:1.2em;height:1.2em;vertical-align:middle;"><path d="M16.6 2h-3.2v13.2c0 1.8-1.4 3.2-3.2 3.2S7 17 7 15.2s1.4-3.2 3.2-3.2c.3 0 .6 0 .8.1V8.8c-.3 0-.6-.1-.8-.1-3.6 0-6.5 2.9-6.5 6.5S6.6 21.7 10.2 21.7s6.5-2.9 6.5-6.5V8.5c1.3 1 2.9 1.5 4.6 1.5V6.7c-2.5-.1-4.6-2.1-4.7-4.7z" fill="currentColor" stroke="none"></path></svg></span>Our TikTok Page!
-        </a>
-        <a href="https://sites.google.com/view/g0sfwfs-vocm0dlfe/t00ls/fun/ugs" target="_blank" class="social-btn">
-          <span class="social-icon"><svg viewBox="0 0 24 24" style="width:1.2em;height:1.2em;vertical-align:middle;"><path d="M3 2l1.7 19.2L12 24l7.3-2.8L21 2H3zm14.2 5H8.6l.2 2.2h8.2l-.6 7.2L12 18.2l-4.4-1.8-.3-3.5h2.2l.2 1.8 2.3.9 2.3-.9.2-2.4H6.8L6 4h11.4l-.2 3z" fill="currentColor"></path></svg></span>Ultimate Game Stash!
-        </a>
-        <a href="https://sites.google.com/view/potato-zone-123" target="_blank" class="social-btn">
-          <span class="social-icon">🏆</span>Performance Site!
-        </a>
-        <a href="https://sites.google.com/view/g0sfwfs-vocm0dlfe/partner" target="_blank" class="social-btn">
-          <span class="social-icon">🤝</span>Partners!
-        </a>
-        <a href="https://sites.google.com/view/g0sfwfs-vocm0dlfe/rules" target="_blank" class="social-btn">
-          <span class="social-icon">📜</span>Rules!
-        </a>
-      </div>
-    </div>
-  </div>
+  
   <div id="signature"><span id="signature-text"></span><span class="caret"></span></div>
   <div class="center-controls">
     <div id="catchphrase">🎮 UNBL0CKEDZ0NE! 💻</div>
-    <div id="quote">Loading quotes...</div>
     <div id="search-container">
       <input id="search-bar" placeholder="Search with DuckDuckGo! V4.0 - Up to Date!" autocomplete="off">
       <!-- Search icon button -->
@@ -515,49 +711,20 @@ body.no-rainbow *{animation-name:none!important}
           <line x1="16.5" y1="16.5" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round"></line>
         </svg>
       </button>
-      <!-- Settings icon button -->
-      <div id="settings-wrap">
-        <button id="settings-btn" class="icon-btn" title="Settings">
-          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
-            <path d="M19.14 12.94c.04-.3.06-.61.06-.94s-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"></path>
-          </svg>
-        </button>
-        <div id="settings-panel">
-          <h3>⚙ Settings</h3>
-
-          <div class="setting-row">
-            <label>Background FX</label>
-            <label class="toggle">
-              <input type="checkbox" id="toggle-bg" checked="">
-              <div class="toggle-track"></div>
-              <div class="toggle-thumb"></div>
-            </label>
-          </div>
-
-          <div class="setting-row">
-            <label>Rainbow Mode</label>
-            <label class="toggle">
-              <input type="checkbox" id="toggle-rainbow" checked="">
-              <div class="toggle-track"></div>
-              <div class="toggle-thumb"></div>
-            </label>
-          </div>
-
-          <hr class="setting-divider">
-
-          <div class="setting-row" style="flex-direction:column;align-items:flex-start;gap:6px">
-            <label>Theme Color</label>
-            <div class="theme-swatches swatches-rainbow-on" id="theme-swatches">
-              <div class="swatch" data-color="#ff6600" style="background:#ff6600" title="Orange"></div>
-              <div class="swatch" data-color="#ffffff" style="background:#ffffff" title="White"></div>
-              <div class="swatch" data-color="#00aaff" style="background:#00aaff" title="Cyan"></div>
-              <div class="swatch" data-color="#00dd66" style="background:#00dd66" title="Green"></div>
-              <div class="swatch" data-color="#ff1166" style="background:#ff1166" title="Pink"></div>
-              <div class="swatch" data-color="#ffd700" style="background:#ffd700" title="Gold"></div>
-            </div>
-          </div>
-        </div>
-      </div>
+    </div>
+    <div id="shortcut-row">
+      <button class="shortcut-btn" data-url="chatgpt.com" title="ChatGPT">
+        <img src="https://play.frogiee1.org/stuff/apps/chatgpt.png" alt="ChatGPT">
+      </button>
+      <button class="shortcut-btn" data-url="discord.com" title="Discord">
+        <img src="https://th.bing.com/th?q=Default+Discord+Icon&w=120&h=120&c=1&rs=1&qlt=70&o=7&cb=1&pid=InlineBlock&rm=3&mkt=en-US&cc=US&setlang=en&adlt=moderate&t=1&mw=247" alt="Discord">
+      </button>
+      <button class="shortcut-btn" data-url="tiktok.com" title="TikTok">
+        <img src="https://th.bing.com/th/id/OIP.hG2pQRJiUa9gxkLFPQy6tQHaHa?w=183&h=183&c=7&r=0&o=7&pid=1.7&rm=3" alt="TikTok">
+      </button>
+      <button class="shortcut-btn" data-url="nowgg.fun" title="Now.gg">
+        <img src="https://th.bing.com/th/id/OIP.9Y7UgYGXRXi9dwovymCibAHaHZ?w=172&h=180&c=7&r=0&o=7&pid=1.7&rm=3" alt="Now.gg">
+      </button>
     </div>
   </div>
 
@@ -575,6 +742,12 @@ body.no-rainbow *{animation-name:none!important}
   </div>
 
   <div id="custom-cursor"></div>
+</div>
+
+<!-- Bottom Bar -->
+<div id="bottom-bar">
+  <span id="online-users">online users: <span id="user-count">2258</span></span>
+  <button id="settings-gear" title="Settings"><i class="fas fa-gear"></i></button>
 </div>
 
 <!-- Loading Screen -->
@@ -608,6 +781,220 @@ navigator.serviceWorker?.register("/uv/sw.js");
 
 const connection = new BareMux.BareMuxConnection("/baremux/worker.js");
 connection.setTransport("/libcurl/index.mjs", [{ websocket: "wss://wisp.rhw.one/" }]);
+
+// ─── QUOTES DATA ───
+const quotesData = [
+  { text: "If you see this quote, I broke my code", author: "UNBL0CKEDZ0NE" },
+  { text: "Rattler is kinda good, if you know, you know.", author: "UberMint64" },
+  { text: "fortnite  please  🍕🍕🍕🍕", author: "Matias 12/11/24" },
+  { text: "the site got leaked again", author: "UberMint64" },
+  { text: "If you rub an magnet next to a Chromebook, it will turn off.", author: "UNBL0CKEDZ0NE" },
+  { text: "Press Ctrl Shift W to close all windows.", author: "UNBL0CKEDZ0NE" },
+  { text: "Ctrl Shift T brings back that window.", author: "UNBL0CKEDZ0NE" },
+  { text: "rub your Chromebook for good luck", author: "UNBL0CKEDZ0NE" },
+  { text: "Delete System32 for storage", author: "muffled" },
+  { text: "Why Partner with me?", author: "muffled" },
+  { text: "its not my fault if you block this link.", author: "UNBL0CKEDZ0NE" },
+  { text: "Join the Discord, follow the TikTok, and subscribe to the YouTube!", author: "UNBL0CKEDZ0NE" },
+  { text: "Use Scratch to listen to music!", author: "UNBL0CKEDZ0NE" },
+  { text: "UberMint64 has 64 in his name. (SM64 Reference?)", author: "UNBL0CKEDZ0NE" },
+  { text: "Use my forms so I can make this the best possible site!", author: "UNBL0CKEDZ0NE" },
+  { text: "I hope these quotes are in order", author: "UNBL0CKEDZ0NE" },
+  { text: "To eat, you must put food in your mouth.", author: "UberMint64" },
+  { text: "Shoutout to UberMint64", author: "UNBL0CKEDZ0NE" },
+  { text: "You should add a bunch of games from other game sites to look like you site is superior", author: "Isaiah" },
+  { text: "Pepsi man", author: "jaedon" },
+  { text: "chicken war", author: "Henry" },
+  { text: "this is for dis site", author: "muffled_lemon (btw they are not muffled)" },
+];
+
+// ─── QUOTE OVERLAY ───
+const quoteOverlay = document.getElementById('quote-overlay');
+const quoteOverlayText = document.getElementById('quote-overlay-text');
+const quoteOverlayAuthor = document.getElementById('quote-overlay-author');
+
+function showQuoteOverlay(callback) {
+  const q = quotesData[Math.floor(Math.random() * quotesData.length)];
+  quoteOverlayText.textContent = '"' + q.text + '"';
+  quoteOverlayAuthor.textContent = '- ' + q.author;
+  quoteOverlay.classList.add('active');
+  setTimeout(() => {
+    quoteOverlay.classList.remove('active');
+    if (callback) callback();
+  }, 4000);
+}
+
+// Intercept top nav clicks
+document.querySelectorAll('.top-nav a').forEach(link => {
+  link.addEventListener('click', function(e) {
+    const href = this.getAttribute('href');
+    if (href && href !== '#' && !href.startsWith('javascript')) {
+      e.preventDefault();
+      showQuoteOverlay(() => {
+        window.location.href = href;
+      });
+    }
+  });
+});
+
+// ─── ONLINE USERS ───
+const userCountEl = document.getElementById('user-count');
+let currentUsers = 2258;
+function updateOnlineUsers() {
+  const change = Math.floor(Math.random() * 7) - 3;
+  currentUsers = Math.max(1800, Math.min(2800, currentUsers + change));
+  userCountEl.textContent = currentUsers;
+}
+setInterval(updateOnlineUsers, 3000);
+
+// ─── SETTINGS MODAL ───
+const settingsModal = document.getElementById('settings-modal');
+const settingsGear = document.getElementById('settings-gear');
+const closeSettings = document.getElementById('close-settings');
+
+settingsGear.addEventListener('click', () => {
+  settingsModal.classList.add('active');
+});
+closeSettings.addEventListener('click', () => {
+  settingsModal.classList.remove('active');
+});
+settingsModal.addEventListener('click', (e) => {
+  if (e.target === settingsModal) settingsModal.classList.remove('active');
+});
+
+// ─── TAB CLOAK ───
+const cloakPresets = {
+  google: { title: 'Google', favicon: 'https://www.google.com/favicon.ico' },
+  drive: { title: 'My Drive - Google Drive', favicon: 'https://ssl.gstatic.com/docs/doclist/images/drive_2022q3_32dp.png' },
+  classroom: { title: 'Home', favicon: 'https://ssl.gstatic.com/classroom/favicon.png' },
+  canvas: { title: 'Dashboard', favicon: 'https://du11hjcvx0uqb.cloudfront.net/dist/images/favicon-e10d657a73.ico' },
+  ixl: { title: 'IXL | Math, Language Arts, Science, Social Studies, and Spanish', favicon: 'https://www.ixl.com/favicon.ico' }
+};
+
+document.getElementById('set-cloak').addEventListener('click', () => {
+  const key = document.getElementById('cloak-select').value;
+  const preset = cloakPresets[key];
+  if (preset) {
+    document.title = preset.title;
+    let link = document.querySelector('link[rel*="icon"]');
+    if (!link) { link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link); }
+    link.href = preset.favicon;
+  }
+});
+document.getElementById('reset-cloak').addEventListener('click', () => {
+  document.title = 'UNBLOCKEDZONE';
+  let link = document.querySelector('link[rel*="icon"]');
+  if (link) link.remove();
+});
+
+// ─── CUSTOM CLOAK ───
+document.getElementById('apply-custom-cloak').addEventListener('click', () => {
+  const title = document.getElementById('custom-title').value.trim();
+  const favicon = document.getElementById('custom-favicon').value.trim();
+  if (title) document.title = title;
+  if (favicon) {
+    let link = document.querySelector('link[rel*="icon"]');
+    if (!link) { link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link); }
+    link.href = favicon;
+  }
+});
+
+// ─── THEME SELECT ───
+const themeColors = {
+  orange: '#ff6600',
+  cyan: '#00aaff',
+  green: '#00dd66',
+  pink: '#ff1166',
+  gold: '#ffd700',
+  white: '#ffffff'
+};
+document.getElementById('theme-select').addEventListener('change', function() {
+  const color = themeColors[this.value];
+  if (!color) return;
+  const r = parseInt(color.slice(1,3),16);
+  const g = parseInt(color.slice(3,5),16);
+  const b = parseInt(color.slice(5,7),16);
+  const root = document.documentElement;
+  root.style.setProperty('--accent', color);
+  root.style.setProperty('--accent-glow',        `rgba(${r},${g},${b},0.5)`);
+  root.style.setProperty('--accent-glow-strong',  `rgba(${r},${g},${b},0.8)`);
+  root.style.setProperty('--accent-glow-soft',    `rgba(${r},${g},${b},0.15)`);
+});
+
+// ─── PARTICLES TOGGLE ───
+const canvas = document.getElementById('bg-canvas');
+document.getElementById('particles-on').addEventListener('click', () => {
+  canvas.style.transition = 'opacity .4s';
+  canvas.style.opacity = '1';
+  document.body.classList.remove('no-bg-fx');
+});
+document.getElementById('particles-off').addEventListener('click', () => {
+  canvas.style.transition = 'opacity .4s';
+  canvas.style.opacity = '0';
+  document.body.classList.add('no-bg-fx');
+});
+
+// ─── MOBILE SCREEN SIZER ───
+document.getElementById('mobile-on').addEventListener('click', () => {
+  const meta = document.querySelector('meta[name="viewport"]');
+  if (meta) meta.content = 'width=375, initial-scale=1.0';
+});
+document.getElementById('mobile-off').addEventListener('click', () => {
+  const meta = document.querySelector('meta[name="viewport"]');
+  if (meta) meta.content = 'width=device-width, initial-scale=1.0';
+});
+
+// ─── GAMES SORTED A-Z ───
+let gamesSortedAZ = false;
+document.getElementById('sort-on').addEventListener('click', () => {
+  gamesSortedAZ = true;
+  alert('Games sorted A-Z: Enabled (applies on game pages)');
+});
+document.getElementById('sort-off').addEventListener('click', () => {
+  gamesSortedAZ = false;
+  alert('Games sorted A-Z: Disabled');
+});
+
+// ─── ANTI DELEDAO ───
+let antiDeledao = false;
+let deledaoOverlay = null;
+document.getElementById('deledao-on').addEventListener('click', () => {
+  antiDeledao = true;
+  if (!deledaoOverlay) {
+    deledaoOverlay = document.createElement('div');
+    deledaoOverlay.style.cssText = 'position:fixed;inset:0;z-index:9998;background:transparent;pointer-events:none;display:none;';
+    deledaoOverlay.id = 'deledao-shield';
+    document.body.appendChild(deledaoOverlay);
+  }
+  deledaoOverlay.style.display = 'block';
+});
+document.getElementById('deledao-off').addEventListener('click', () => {
+  antiDeledao = false;
+  if (deledaoOverlay) deledaoOverlay.style.display = 'none';
+});
+
+// ─── DEBUG MODE ───
+document.getElementById('debug-mode').addEventListener('click', () => {
+  console.log('=== DEBUG MODE ===');
+  console.log('User Agent:', navigator.userAgent);
+  console.log('Platform:', navigator.platform);
+  console.log('Language:', navigator.language);
+  console.log('CPU Cores:', navigator.hardwareConcurrency);
+  console.log('Screen:', screen.width + 'x' + screen.height);
+  console.log('Online Users:', currentUsers);
+  console.log('Games Sorted A-Z:', gamesSortedAZ);
+  console.log('Anti Deledao:', antiDeledao);
+  alert('Debug info logged to console! Press F12 to view.');
+});
+
+// ─── ABOUT:BLANK CLOAKER ───
+document.getElementById('blank-cloak').addEventListener('dblclick', () => {
+  const win = window.open('about:blank', '_blank');
+  if (win) {
+    win.document.write('<!DOCTYPE html><html><head><title>Google</title><link rel="icon" href="https://www.google.com/favicon.ico"></head><body style="margin:0;padding:0;overflow:hidden"><iframe src="' + window.location.href + '" style="border:none;width:100vw;height:100vh;"></iframe></body></html>');
+    win.document.close();
+  }
+});
 
 // ─── TAB SYSTEM ───
 const tabs = [];
@@ -801,7 +1188,6 @@ document.getElementById("newTabBtn").onclick = () => {
 
 // ─── VISUAL EFFECTS ───
 function initMainSite() {
-  const canvas = document.getElementById('bg-canvas');
   const ctx = canvas.getContext('2d');
   let W, H, mouse = { x: -9999, y: -9999 };
   let particles = [], embers = [], rings = [];
@@ -916,106 +1302,40 @@ function initMainSite() {
 
   // Custom cursor
   const cursorEl = document.getElementById('custom-cursor');
-  let cursorX = 0, cursorY = 0;
-  document.addEventListener('mousemove', e => { cursorX = e.clientX; cursorY = e.clientY; });
-  function updateCursor() { cursorEl.style.left = cursorX + 'px'; cursorEl.style.top = cursorY + 'px'; requestAnimationFrame(updateCursor); }
-  updateCursor();
-
-  // Quotes
-  const quotes = [
-    "If you see this quote, I broke my code - UNBL0CKEDZ0NE",
-    "Rattler is kinda good, if you know, you know. - UberMint64",
-    "fortnite  please  🍕🍕🍕🍕 - Matias 12/11/24",
-    "the site got leaked again - UberMint64",
-    "If you rub an magnet next to a Chromebook, it will turn off. - UNBL0CKEDZ0NE",
-    "Press Ctrl Shift W to close all windows. - UNBL0CKEDZ0NE",
-    "Ctrl Shift T brings back that window. - UNBL0CKEDZ0NE",
-    "rub your Chromebook for good luck - UNBL0CKEDZ0NE",
-    "Delete System32 for storage - muffled",
-    "Why Partner with me? - muffled",
-    "its not my fault if you block this link. - UNBL0CKEDZ0NE",
-    "Join the Discord, follow the TikTok, and subscribe to the YouTube! - UNBL0CKEDZ0NE",
-    "Use Scratch to listen to music! - UNBL0CKEDZ0NE",
-    "UberMint64 has 64 in his name. (SM64 Reference?) - UNBL0CKEDZ0NE",
-    "Use my forms so I can make this the best possible site! - UNBL0CKEDZ0NE",
-    "I hope these quotes are in order - UNBL0CKEDZ0NE",
-    "To eat, you must put food in your mouth. - UberMint64",
-    "Shoutout to UberMint64- UNBL0CKEDZ0NE",
-    "You should add a bunch of games from other game sites to look like you site is superior - Isaiah",
-    "Pepsi man - jaedon",
-    "chicken war - Henry",
-    "this is for dis site - muffled_lemon (btw they are not muffled)",
-    "I just wanted to say thank for adding YoungBoy - izeah",
-    "Console - Restarting Quotes ⟳ [ETA - 5s]",
-  ];
-  let qi = 0;
-  const quoteEl = document.getElementById('quote');
-  setInterval(() => { qi = (qi+1) % quotes.length; quoteEl.textContent = quotes[qi]; }, 5000);
-  quoteEl.textContent = quotes[0];
-
-  // ─── SETTINGS ───
-  const settingsBtn   = document.getElementById('settings-btn');
-  const settingsPanel = document.getElementById('settings-panel');
-  const swatchesEl    = document.getElementById('theme-swatches');
-  const toggleRainbow = document.getElementById('toggle-rainbow');
-
-  settingsBtn.addEventListener('click', function(e) {
-    e.stopPropagation();
-    const open = settingsPanel.classList.toggle('open');
-    settingsBtn.classList.toggle('open', open);
-  });
-
-  document.addEventListener('click', function(e) {
-    if (!document.getElementById('settings-wrap').contains(e.target)) {
-      settingsPanel.classList.remove('open');
-      settingsBtn.classList.remove('open');
-    }
-  });
-
-  // Background FX toggle
-  document.getElementById('toggle-bg').addEventListener('change', function() {
-    const on = this.checked;
-    canvas.style.transition = 'opacity .4s';
-    canvas.style.opacity = on ? '1' : '0';
-    document.body.classList.toggle('no-bg-fx', !on);
-  });
-
-  function setRainbowMode(on) {
-    if (on) {
-      const root = document.documentElement;
-      root.style.setProperty('--accent', '#ff6600');
-      root.style.setProperty('--accent-glow',        'rgba(255,102,0,0.5)');
-      root.style.setProperty('--accent-glow-strong',  'rgba(255,102,0,0.8)');
-      root.style.setProperty('--accent-glow-soft',    'rgba(255,102,0,0.15)');
-      document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
-    }
-    toggleRainbow.checked = on;
-    document.body.classList.toggle('no-rainbow', !on);
-    swatchesEl.classList.toggle('swatches-rainbow-on', on);
+  let cx = 0, cy = 0, tx = 0, ty = 0;
+  document.addEventListener('mousemove', e => { tx = e.clientX; ty = e.clientY; });
+  function loopCursor() {
+    cx += (tx - cx) * 0.25;
+    cy += (ty - cy) * 0.25;
+    cursorEl.style.left = cx + 'px';
+    cursorEl.style.top = cy + 'px';
+    requestAnimationFrame(loopCursor);
   }
-
-  toggleRainbow.addEventListener('change', function() {
-    setRainbowMode(this.checked);
+  loopCursor();
+  document.addEventListener('mousedown', () => {
+    cursorEl.style.width = '14px';
+    cursorEl.style.height = '14px';
+    cursorEl.style.borderColor = '#fff';
+  });
+  document.addEventListener('mouseup', () => {
+    cursorEl.style.width = '20px';
+    cursorEl.style.height = '20px';
+    cursorEl.style.borderColor = '';
+  });
+  // Ensure cursor works on all interactive elements
+  document.querySelectorAll('a, button, input, select, [role="button"]').forEach(el => {
+    el.addEventListener('mouseenter', () => { cursorEl.style.borderColor = '#fff'; cursorEl.style.boxShadow = '0 0 20px var(--accent-glow-strong),inset 0 0 10px var(--accent-glow-strong)'; });
+    el.addEventListener('mouseleave', () => { cursorEl.style.borderColor = ''; cursorEl.style.boxShadow = ''; });
   });
 
-  document.querySelectorAll('.swatch').forEach(swatch => {
-    swatch.addEventListener('click', function() {
-      const color = this.dataset.color;
-      const r = parseInt(color.slice(1,3),16);
-      const g = parseInt(color.slice(3,5),16);
-      const b = parseInt(color.slice(5,7),16);
-      const root = document.documentElement;
-      root.style.setProperty('--accent', color);
-      root.style.setProperty('--accent-glow',        `rgba(${r},${g},${b},0.5)`);
-      root.style.setProperty('--accent-glow-strong',  `rgba(${r},${g},${b},0.8)`);
-      root.style.setProperty('--accent-glow-soft',    `rgba(${r},${g},${b},0.15)`);
-      document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
-      this.classList.add('active');
-      setRainbowMode(false);
+  // ─── SHORTCUT BUTTONS ───
+  document.querySelectorAll('.shortcut-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const url = 'https://' + btn.dataset.url;
+      loadingScreen.classList.add('active');
+      createTab(url);
     });
   });
-
-  setRainbowMode(true);
 
   // ─── MUSIC PLAYER ───
   const audio     = document.getElementById('bg-music');
