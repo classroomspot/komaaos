@@ -30,7 +30,7 @@
   --card-border:#00ffff;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;font-family:'Pixelify Sans',monospace,sans-serif;background:#050001;color:var(--accent);overflow:hidden;cursor:none}
+html,body{height:100%;font-family:'Pixelify Sans',monospace,sans-serif;background:#050001;color:var(--accent);overflow:hidden;}
 
 body::after{
   content:"";position:fixed;inset:0;
@@ -252,7 +252,6 @@ canvas#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;po
 .icon-btn:hover{background:var(--accent-glow-soft);box-shadow:0 0 14px var(--accent-glow-strong);transform:translateY(-2px)}
 #settings-btn.open{box-shadow:0 0 16px var(--accent-glow-strong);background:var(--accent-glow-soft)}
 
-#custom-cursor{position:fixed;top:0;left:0;width:20px;height:20px;border-radius:50%;border:2.5px solid var(--accent);background:rgba(255,102,0,0.08);pointer-events:none;z-index:99999;transform:translate(-50%,-50%);box-shadow:0 0 12px var(--accent-glow),inset 0 0 6px var(--accent-glow);animation:pulse 1.2s infinite alternate,rainbow-glow 8s linear infinite;transition:transform .08s ease-out,border-color .08s,width .15s,height .15s;mix-blend-mode:screen}
 @keyframes pulse{from{transform:translate(-50%,-50%) scale(1);opacity:1}to{transform:translate(-50%,-50%) scale(1.4);opacity:.6}}
 #social-row{display:flex;flex-direction:row;gap:10px;align-items:center;flex-wrap:nowrap;white-space:nowrap;justify-content:center}
 .social-btn{padding:8px 16px;border-radius:8px;background:transparent;color:var(--accent);text-decoration:none;font-weight:bold;text-align:center;border:1px solid var(--accent);box-shadow:0 0 8px var(--accent-glow);transition:transform .2s,box-shadow .2s,background .2s;white-space:nowrap;display:flex;align-items:center;gap:8px;font-size:.9rem}
@@ -664,7 +663,6 @@ canvas#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;po
     </div>
   </div>
 
-  <div id="custom-cursor"></div>
 </div>
 
 <!-- Bottom Bar -->
@@ -1217,34 +1215,6 @@ function initMainSite() {
   let si = 0;
   function typeSig() { if (si <= signatureText.length) { sigEl.textContent = signatureText.slice(0, si); si++; setTimeout(typeSig, 40 + Math.random()*60); } }
   setTimeout(typeSig, 400);
-
-  // Custom cursor
-  const cursorEl = document.getElementById('custom-cursor');
-  let cx = 0, cy = 0, tx = 0, ty = 0;
-  document.addEventListener('mousemove', e => { tx = e.clientX; ty = e.clientY; });
-  function loopCursor() {
-    cx += (tx - cx) * 0.25;
-    cy += (ty - cy) * 0.25;
-    cursorEl.style.left = cx + 'px';
-    cursorEl.style.top = cy + 'px';
-    requestAnimationFrame(loopCursor);
-  }
-  loopCursor();
-  document.addEventListener('mousedown', () => {
-    cursorEl.style.width = '14px';
-    cursorEl.style.height = '14px';
-    cursorEl.style.borderColor = '#fff';
-  });
-  document.addEventListener('mouseup', () => {
-    cursorEl.style.width = '20px';
-    cursorEl.style.height = '20px';
-    cursorEl.style.borderColor = '';
-  });
-  // Ensure cursor works on all interactive elements
-  document.querySelectorAll('a, button, input, select, [role="button"]').forEach(el => {
-    el.addEventListener('mouseenter', () => { cursorEl.style.borderColor = '#fff'; cursorEl.style.boxShadow = '0 0 20px var(--accent-glow-strong),inset 0 0 10px var(--accent-glow-strong)'; });
-    el.addEventListener('mouseleave', () => { cursorEl.style.borderColor = ''; cursorEl.style.boxShadow = ''; });
-  });
 
   // ─── SHORTCUT BUTTONS ───
   document.querySelectorAll('.shortcut-btn').forEach(btn => {
