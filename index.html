@@ -9,14 +9,13 @@
 <script src="/uv/uv.config.js"></script>
 <script src="/baremux/index.js"></script>
 
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
-* { box-sizing: border-box; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
-    margin: 0;
     width: 100%;
     height: 100%;
     overflow: hidden;
@@ -24,56 +23,56 @@ html, body {
 }
 
 body {
-    background: url('https://cdn.wallpapersafari.com/41/51/UWuyKN.jpg') center/cover no-repeat fixed;
+    background: url('https://i.pinimg.com/736x/9d/d7/32/9dd732dcef231dc45359175a39c20c08.jpg') center/cover no-repeat fixed;
+    transition: background-image 0.5s ease;
 }
 
 body::before {
     content: '';
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: -1;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.45);
+    z-index: 0;
+    pointer-events: none;
 }
 
+/* Snow */
 .snow-container {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
     pointer-events: none;
     z-index: 1;
     overflow: hidden;
+    display: none;
 }
+.snow-container.active { display: block; }
 
 .particle {
     position: absolute;
-    width: 6px;
-    height: 6px;
     background: #fff;
     border-radius: 50%;
     animation: fall linear infinite;
-    box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 4px rgba(255,255,255,0.8);
 }
 
 @keyframes fall {
-    0% { transform: translateY(-20px) translateX(0) rotate(0deg); opacity: 1; }
-    25% { transform: translateY(25vh) translateX(15px) rotate(90deg); opacity: 0.9; }
-    50% { transform: translateY(50vh) translateX(-10px) rotate(180deg); opacity: 0.8; }
-    75% { transform: translateY(75vh) translateX(20px) rotate(270deg); opacity: 0.6; }
+    0%   { transform: translateY(-20px) translateX(0) rotate(0deg); opacity: 1; }
+    25%  { transform: translateY(25vh) translateX(15px) rotate(90deg); opacity: 0.9; }
+    50%  { transform: translateY(50vh) translateX(-10px) rotate(180deg); opacity: 0.8; }
+    75%  { transform: translateY(75vh) translateX(20px) rotate(270deg); opacity: 0.6; }
     100% { transform: translateY(105vh) translateX(-5px) rotate(360deg); opacity: 0; }
 }
 
+/* Browser UI */
 .browser-ui {
     height: 96px;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(0,0,0,0.82);
     backdrop-filter: blur(20px);
     display: flex;
     flex-direction: column;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    border-bottom: 1px solid rgba(255,255,255,0.25);
     z-index: 10;
     position: relative;
 }
@@ -93,59 +92,38 @@ body::before {
     max-width: 220px;
     padding: 0 12px;
     border-radius: 8px 8px 0 0;
-    background: rgba(30, 30, 30, 0.9);
+    background: rgba(30,30,30,0.9);
     color: #aaa;
     display: flex;
     align-items: center;
     gap: 8px;
     cursor: pointer;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255,255,255,0.1);
     transition: all 0.3s ease;
     font-family: 'Orbitron', sans-serif;
-    font-size: 12px;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+    font-size: 11px;
+    text-shadow: 0 0 5px rgba(255,255,255,0.3);
 }
 
 .tab.active {
-    background: rgba(50, 50, 50, 0.95);
+    background: rgba(50,50,50,0.95);
     color: #fff;
-    border-color: rgba(255, 255, 255, 0.5);
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.1);
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6);
+    border-color: rgba(255,255,255,0.5);
+    box-shadow: 0 0 15px rgba(255,255,255,0.2), inset 0 0 10px rgba(255,255,255,0.05);
+    text-shadow: 0 0 10px rgba(255,255,255,0.8);
 }
 
-.tab span {
-    flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-.tab i {
-    opacity: 0.6;
-    transition: all 0.2s;
-}
-.tab i:hover {
-    opacity: 1;
-    color: #ff4444;
-    text-shadow: 0 0 10px #ff4444;
-}
+.tab span { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tab i { opacity: 0.6; transition: all 0.2s; }
+.tab i:hover { opacity: 1; color: #ff4444; text-shadow: 0 0 10px #ff4444; }
 
 .newtab {
-    width: 32px;
-    height: 32px;
-    border-radius: 6px;
-    border: none;
-    background: transparent;
-    color: #fff;
-    cursor: pointer;
-    transition: all 0.3s;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+    width: 32px; height: 32px;
+    border-radius: 6px; border: none;
+    background: transparent; color: #fff;
+    cursor: pointer; transition: all 0.3s;
 }
-.newtab:hover { 
-    background: rgba(255, 255, 255, 0.2); 
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
-}
+.newtab:hover { background: rgba(255,255,255,0.15); }
 
 .navbar {
     height: 58px;
@@ -156,95 +134,60 @@ body::before {
 }
 
 .navbar button {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    border: none;
-    background: transparent;
-    color: #fff;
-    cursor: pointer;
-    transition: all 0.3s;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+    width: 34px; height: 34px;
+    border-radius: 50%; border: none;
+    background: transparent; color: #fff;
+    cursor: pointer; transition: all 0.3s;
 }
 .navbar button:hover {
-    background: rgba(255, 255, 255, 0.2);
-    color: #fff;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    background: rgba(255,255,255,0.15);
+    box-shadow: 0 0 12px rgba(255,255,255,0.3);
 }
 
 .urlbar {
-    flex: 1;
-    height: 36px;
-    background: rgba(10, 10, 10, 0.9);
+    flex: 1; height: 36px;
+    background: rgba(10,10,10,0.85);
     border-radius: 18px;
     padding: 0 16px;
     display: flex;
     align-items: center;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1), inset 0 0 20px rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255,255,255,0.25);
     transition: all 0.3s;
 }
-
 .urlbar:focus-within {
-    border-color: rgba(255, 255, 255, 0.6);
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.1);
+    border-color: rgba(255,255,255,0.55);
+    box-shadow: 0 0 18px rgba(255,255,255,0.2);
 }
-
 .urlbar input {
-    width: 100%;
-    height: 100%;
-    background: transparent;
-    border: none;
-    outline: none;
-    color: #fff;
-    font-size: 14px;
+    width: 100%; height: 100%;
+    background: transparent; border: none; outline: none;
+    color: #fff; font-size: 14px;
     font-family: 'Rajdhani', sans-serif;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
 }
-
-.urlbar input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
-}
+.urlbar input::placeholder { color: rgba(255,255,255,0.45); }
 
 .search-engine-select {
-    background: transparent;
-    border: none;
-    color: #fff;
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 13px;
-    cursor: pointer;
-    outline: none;
-    padding-right: 5px;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+    background: transparent; border: none;
+    color: #fff; font-family: 'Rajdhani', sans-serif;
+    font-size: 13px; cursor: pointer; outline: none;
+    padding-right: 6px;
 }
+.search-engine-select option { background: #111; color: #fff; }
 
-.search-engine-select option {
-    background: #111;
-    color: #fff;
-}
-
+/* Frames */
 .viewframe {
     position: absolute;
-    top: 96px;
-    left: 0;
-    width: 100%;
-    height: calc(100% - 96px);
-    border: none;
-    display: none;
-    z-index: 5;
+    top: 96px; left: 0;
+    width: 100%; height: calc(100% - 96px);
+    border: none; display: none; z-index: 5;
 }
+.viewframe.active { display: block; }
 
-.viewframe.active {
-    display: block;
-}
-
+/* NTP — Date display */
 .ntp {
     position: absolute;
-    top: 96px;
-    left: 0;
-    width: 100%;
-    height: calc(100% - 96px);
+    top: 96px; left: 0;
+    width: 100%; height: calc(100% - 96px);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -252,33 +195,92 @@ body::before {
     z-index: 5;
 }
 
-.ntp h1 {
+.date-container {
+    text-align: center;
+    padding: 20px 40px;
+    user-select: none;
+}
+
+.day-name {
     font-family: 'Orbitron', sans-serif;
-    font-size: 4rem;
+    font-size: clamp(3rem, 10vw, 8rem);
     font-weight: 700;
+    letter-spacing: 0.3em;
+    color: #e8e8e8;
+    text-transform: uppercase;
+    text-shadow:
+        0 0 10px rgba(255,255,255,0.3),
+        0 0 40px rgba(255,255,255,0.12);
+    line-height: 1.1;
+}
+
+.full-date {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(0.9rem, 2.5vw, 1.4rem);
+    font-weight: 500;
+    letter-spacing: 0.5em;
+    color: #b0b0b0;
+    margin-top: 15px;
+    text-transform: uppercase;
+}
+
+.ntp-search-wrap {
+    margin-top: 28px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    width: min(480px, 80vw);
+}
+
+.ntp-search-wrap form {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border-bottom: 1px solid rgba(255,255,255,0.35);
+    padding-bottom: 4px;
+    transition: border-color 0.25s;
+}
+
+.ntp-search-wrap form:focus-within {
+    border-color: rgba(255,255,255,0.75);
+}
+
+.ntp-search-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
     color: #fff;
-    text-shadow: 
-        0 0 10px rgba(255, 255, 255, 0.8),
-        0 0 20px rgba(255, 255, 255, 0.6),
-        0 0 30px rgba(255, 255, 255, 0.8),
-        0 0 40px rgba(255, 255, 255, 0.6),
-        0 0 50px rgba(255, 255, 255, 0.4);
-    animation: pulse 3s ease-in-out infinite;
-    letter-spacing: 4px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.1rem;
+    letter-spacing: 0.08em;
+    padding: 4px 8px 4px 2px;
 }
 
-@keyframes pulse {
-    0%, 100% { text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.6), 0 0 30px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 0.6), 0 0 50px rgba(255, 255, 255, 0.4); }
-    50% { text-shadow: 0 0 20px rgba(255, 255, 255, 1), 0 0 30px rgba(255, 255, 255, 0.8), 0 0 40px rgba(255, 255, 255, 1), 0 0 50px rgba(255, 255, 255, 0.8), 0 0 60px rgba(255, 255, 255, 0.6); }
+.ntp-search-input::placeholder {
+    color: rgba(255,255,255,0.35);
+    font-size: 0.95rem;
+    letter-spacing: 0.12em;
 }
 
+.ntp-search-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255,255,255,0.45);
+    cursor: pointer;
+    font-size: 0.9rem;
+    padding: 2px 4px;
+    transition: color 0.2s;
+}
+
+.ntp-search-btn:hover { color: rgba(255,255,255,0.9); }
+
+/* Loading */
 .loading-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.85);
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85);
     display: none;
     flex-direction: column;
     align-items: center;
@@ -286,33 +288,147 @@ body::before {
     z-index: 1000;
     backdrop-filter: blur(10px);
 }
-
-.loading-overlay.active {
-    display: flex;
-}
-
-.loading-overlay img {
-    width: 200px;
-    height: 200px;
-    border-radius: 20px;
-    box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
-}
-
+.loading-overlay.active { display: flex; }
+.loading-overlay img { width: 200px; height: 200px; border-radius: 20px; box-shadow: 0 0 30px rgba(255,255,255,0.5); }
 .loading-text {
     font-family: 'Orbitron', sans-serif;
-    font-size: 2rem;
-    color: #fff;
-    margin-top: 20px;
-    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 0 0 20px rgba(255, 255, 255, 0.8);
+    font-size: 2rem; color: #fff; margin-top: 20px;
+    text-shadow: 0 0 10px rgba(255,255,255,0.8);
     animation: blink 1s ease-in-out infinite;
 }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.5} }
 
-@keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+/* Settings Panel */
+.settings-btn {
+    width: 34px; height: 34px;
+    border-radius: 50%; border: none;
+    background: transparent; color: #fff;
+    cursor: pointer; transition: all 0.3s;
+    font-size: 15px;
 }
+.settings-btn:hover {
+    background: rgba(255,255,255,0.15);
+    box-shadow: 0 0 12px rgba(255,255,255,0.3);
+}
+
+.settings-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    z-index: 900;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(6px);
+}
+.settings-overlay.active { display: flex; }
+
+.settings-panel {
+    background: rgba(12,12,15,0.97);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 18px;
+    width: min(680px, 94vw);
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 32px;
+    box-shadow: 0 0 60px rgba(0,0,0,0.8), 0 0 30px rgba(255,255,255,0.06);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.2) transparent;
+}
+
+.settings-panel h2 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.3rem;
+    color: #fff;
+    letter-spacing: 0.15em;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.settings-panel h2 button {
+    background: transparent; border: none;
+    color: #aaa; cursor: pointer; font-size: 1.1rem;
+    transition: color 0.2s;
+}
+.settings-panel h2 button:hover { color: #fff; }
+
+.wallpaper-section-label {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+}
+
+.wallpaper-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.wp-thumb {
+    position: relative;
+    aspect-ratio: 16/9;
+    border-radius: 10px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.25s ease;
+    background: #111;
+}
+
+.wp-thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.wp-thumb:hover img { transform: scale(1.07); }
+
+.wp-thumb:hover {
+    border-color: rgba(255,255,255,0.5);
+    box-shadow: 0 0 18px rgba(255,255,255,0.2);
+}
+
+.wp-thumb.selected {
+    border-color: #fff;
+    box-shadow: 0 0 20px rgba(255,255,255,0.4), inset 0 0 10px rgba(255,255,255,0.05);
+}
+
+.wp-thumb .snow-badge {
+    position: absolute;
+    bottom: 5px; right: 5px;
+    background: rgba(0,0,0,0.65);
+    color: #fff;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    letter-spacing: 0.08em;
+    display: flex; align-items: center; gap: 4px;
+    pointer-events: none;
+}
+
+.wp-thumb.selected::after {
+    content: '✓';
+    position: absolute;
+    top: 7px; right: 8px;
+    background: rgba(255,255,255,0.9);
+    color: #000;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
+}
+
 </style>
-<base target="_blank">
 <base target="_blank">
 </head>
 
@@ -344,11 +460,22 @@ body::before {
         </form>
 
         <button id="popout"><i class="fas fa-external-link"></i></button>
+        <button class="settings-btn" id="settingsBtn"><i class="fas fa-gear"></i></button>
     </div>
 </div>
 
+<!-- NTP: Date Display -->
 <div class="ntp" id="ntp">
-    <h1>classroomspot web</h1>
+    <div class="date-container">
+        <div class="day-name" id="dayName">SATURDAY</div>
+        <div class="full-date" id="fullDate">MAY 09, 2026</div>
+    </div>
+    <div class="ntp-search-wrap">
+        <form id="ntpForm">
+            <input class="ntp-search-input" id="ntpInput" placeholder="search the web..." autocomplete="off">
+            <button class="ntp-search-btn" type="submit"><i class="fas fa-arrow-right"></i></button>
+        </form>
+    </div>
 </div>
 
 <div class="loading-overlay" id="loader">
@@ -356,9 +483,134 @@ body::before {
     <div class="loading-text">LOADING...</div>
 </div>
 
-<script>
-navigator.serviceWorker?.register("/uv/sw.js")
+<!-- Settings Panel -->
+<div class="settings-overlay" id="settingsOverlay">
+    <div class="settings-panel">
+        <h2>
+            <span><i class="fas fa-image" style="margin-right:10px;opacity:0.7"></i>WALLPAPER</span>
+            <button id="closeSettings"><i class="fas fa-xmark"></i></button>
+        </h2>
+        <div class="wallpaper-section-label">Choose a background</div>
+        <div class="wallpaper-grid" id="wallpaperGrid"></div>
+    </div>
+</div>
 
+<script>
+// ---- Wallpapers ----
+const wallpapers = [
+    { url: 'https://i.pinimg.com/736x/9d/d7/32/9dd732dcef231dc45359175a39c20c08.jpg', snow: false },
+    { url: 'https://i.pinimg.com/736x/03/90/49/039049440bc565940da13169f3154855.jpg', snow: false },
+    { url: 'https://i.pinimg.com/1200x/a5/96/a1/a596a18a628663d541e67fc964f8e95c.jpg', snow: false },
+    { url: 'https://i.pinimg.com/736x/7e/99/bf/7e99bf7c49f7c639362c6e31100564c0.jpg', snow: false },
+    { url: 'https://i.pinimg.com/1200x/dc/69/e3/dc69e372d08e0900894858243ee51912.jpg', snow: false },
+    { url: 'https://i.pinimg.com/736x/82/5d/58/825d58f51e4ec0af0ece4f2b693c0233.jpg', snow: false },
+    { url: 'https://i.pinimg.com/736x/1a/b4/9a/1ab49a9f634d931a427eca73435a7e3b.jpg', snow: false },
+    { url: 'https://i.pinimg.com/736x/40/3b/f6/403bf6839935f5481be9d05ba17e8eca.jpg', snow: false },
+    { url: 'https://i.pinimg.com/1200x/02/f0/b3/02f0b3eb5fa78108371eb44afc1c9ac5.jpg', snow: false },
+    { url: 'https://i.pinimg.com/736x/f8/dc/d4/f8dcd4d0bf9c7f4452052d319c913b2a.jpg', snow: false },
+    { url: 'https://i.pinimg.com/736x/a5/22/1e/a5221e19956a61eb38fda9c45657c3e6.jpg', snow: false },
+    { url: 'https://i.pinimg.com/1200x/65/60/f9/6560f98d7786d4070bad0971edc77400.jpg', snow: false },
+    { url: 'https://i.pinimg.com/736x/81/9e/9f/819e9f76ffb0e17e91b71c282f2ad53a.jpg', snow: false },
+    { url: 'https://i.pinimg.com/736x/45/a6/32/45a6326bd7324efc869217afebace9a0.jpg', snow: false },
+    { url: 'https://i.pinimg.com/736x/8c/02/b7/8c02b76c8196a8ac407248fc0d6c9e8f.jpg', snow: false },
+    { url: 'https://i.pinimg.com/originals/32/f5/76/32f576f2e61853efaf5a47deaed46614.gif', snow: true },
+    { url: 'https://i.pinimg.com/originals/56/99/72/56997251efc58907f256159b2d8c3ae3.gif', snow: true },
+    { url: 'https://i.pinimg.com/1200x/5d/b0/65/5db065eaf3cf12540d33de69878b42a8.jpg', snow: false },
+    { url: 'https://i.pinimg.com/1200x/84/68/44/84684467e008de73218276315a431ecd.jpg', snow: false },
+]
+
+let currentWallpaper = 0
+
+function applyWallpaper(index) {
+    const wp = wallpapers[index]
+    document.body.style.backgroundImage = `url('${wp.url}')`
+    const snowContainer = document.getElementById('snow')
+    if (wp.snow) {
+        snowContainer.classList.add('active')
+    } else {
+        snowContainer.classList.remove('active')
+    }
+    // update selected thumb
+    document.querySelectorAll('.wp-thumb').forEach((el, i) => {
+        el.classList.toggle('selected', i === index)
+    })
+    currentWallpaper = index
+    localStorage.setItem('cs_wallpaper', index)
+}
+
+function buildWallpaperGrid() {
+    const grid = document.getElementById('wallpaperGrid')
+    wallpapers.forEach((wp, i) => {
+        const thumb = document.createElement('div')
+        thumb.className = 'wp-thumb' + (i === currentWallpaper ? ' selected' : '')
+        const img = document.createElement('img')
+        img.src = wp.url
+        img.loading = 'lazy'
+        thumb.appendChild(img)
+        if (wp.snow) {
+            const badge = document.createElement('div')
+            badge.className = 'snow-badge'
+            badge.innerHTML = '<i class="fas fa-snowflake"></i> snow'
+            thumb.appendChild(badge)
+        }
+        thumb.addEventListener('click', () => {
+            applyWallpaper(i)
+        })
+        grid.appendChild(thumb)
+    })
+}
+
+// Restore saved wallpaper
+const saved = localStorage.getItem('cs_wallpaper')
+if (saved !== null) currentWallpaper = parseInt(saved)
+applyWallpaper(currentWallpaper)
+buildWallpaperGrid()
+
+// Settings open/close
+document.getElementById('settingsBtn').onclick = () => {
+    document.getElementById('settingsOverlay').classList.add('active')
+}
+document.getElementById('closeSettings').onclick = () => {
+    document.getElementById('settingsOverlay').classList.remove('active')
+}
+document.getElementById('settingsOverlay').addEventListener('click', e => {
+    if (e.target === document.getElementById('settingsOverlay'))
+        document.getElementById('settingsOverlay').classList.remove('active')
+})
+
+// ---- Snow particles ----
+function createSnow() {
+    const container = document.getElementById('snow')
+    container.innerHTML = ''
+    for (let i = 0; i < 100; i++) {
+        const p = document.createElement('div')
+        p.className = 'particle'
+        p.style.left = Math.random() * 100 + '%'
+        p.style.animationDuration = (Math.random() * 4 + 2) + 's'
+        p.style.animationDelay = Math.random() * 4 + 's'
+        p.style.opacity = Math.random() * 0.6 + 0.3
+        const sz = Math.random() * 4 + 3
+        p.style.width = sz + 'px'
+        p.style.height = sz + 'px'
+        container.appendChild(p)
+    }
+}
+createSnow()
+
+// ---- Date display ----
+function updateDate() {
+    const now = new Date()
+    const days = ['SUNDAY','MONDAY','TUESDAY','WEDNESDAY','THURSDAY','FRIDAY','SATURDAY']
+    const months = ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE','JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER']
+    document.getElementById('dayName').textContent = days[now.getDay()]
+    document.getElementById('fullDate').textContent =
+        `${months[now.getMonth()]} ${String(now.getDate()).padStart(2,'0')}, ${now.getFullYear()}`
+}
+updateDate()
+setInterval(updateDate, 60000)
+
+// ---- Browser logic ----
+navigator.serviceWorker?.register("/uv/sw.js")
 const connection = new BareMux.BareMuxConnection("/baremux/worker.js")
 connection.setTransport("/libcurl/index.mjs", [{ websocket: "wss://wisp.rhw.one/" }])
 
@@ -369,9 +621,7 @@ const ntp = document.getElementById("ntp")
 const loader = document.getElementById("loader")
 const searchEngineSelect = document.getElementById("searchEngine")
 
-let tabs = []
-let activeId = null
-let idCounter = 0
+let tabs = [], activeId = null, idCounter = 0
 
 const searchEngines = {
     google: "https://www.google.com/search?q=",
@@ -383,73 +633,39 @@ const searchEngines = {
     startpage: "https://www.startpage.com/sp/search?query="
 }
 
-function createSnow() {
-    const container = document.getElementById('snow')
-    for (let i = 0; i < 100; i++) {
-        const particle = document.createElement('div')
-        particle.className = 'particle'
-        particle.style.left = Math.random() * 100 + '%'
-        particle.style.animationDuration = (Math.random() * 4 + 2) + 's'
-        particle.style.animationDelay = Math.random() * 4 + 's'
-        particle.style.opacity = Math.random() * 0.6 + 0.3
-        const size = Math.random() * 4 + 3
-        particle.style.width = size + 'px'
-        particle.style.height = size + 'px'
-        container.appendChild(particle)
-    }
-}
-createSnow()
-
-function showLoader() {
-    loader.classList.add('active')
-}
-
-function hideLoader() {
-    loader.classList.remove('active')
-}
+function showLoader() { loader.classList.add('active') }
+function hideLoader() { loader.classList.remove('active') }
 
 function createTab(url = "") {
     const id = idCounter++
-
     const iframe = document.createElement("iframe")
     iframe.className = "viewframe"
     iframe.dataset.id = id
-
-    iframe.setAttribute("sandbox",
-        "allow-scripts allow-same-origin allow-forms allow-modals allow-popups"
-    )
-
+    iframe.setAttribute("sandbox","allow-scripts allow-same-origin allow-forms allow-modals allow-popups")
     document.body.appendChild(iframe)
 
     const tabBtn = document.createElement("div")
     tabBtn.className = "tab"
     tabBtn.dataset.id = id
     tabBtn.innerHTML = `<span>New Tab</span><i class="fas fa-xmark"></i>`
-
     tabBtn.addEventListener("click", e => {
         if (e.target.tagName === "I") closeTab(id)
         else activateTab(id)
     })
-
     tabsEl.insertBefore(tabBtn, newTabBtn)
-
     tabs.push({ id, iframe, tabBtn, history: [], index: -1 })
     activateTab(id)
-
     if (url) navigate(url)
 }
 
 function activateTab(id) {
     activeId = id
-
     tabs.forEach(t => {
         t.iframe.classList.toggle("active", t.id === id)
         t.tabBtn.classList.toggle("active", t.id === id)
     })
-
     const tab = getTab()
     if (!tab) return
-
     if (tab.index >= 0) {
         urlInput.value = tab.history[tab.index]
         ntp.style.display = "none"
@@ -461,22 +677,16 @@ function activateTab(id) {
 
 function closeTab(id) {
     if (tabs.length === 1) return
-
     const i = tabs.findIndex(t => t.id === id)
     const tab = tabs[i]
-
     tab.iframe.remove()
     tab.tabBtn.remove()
     tabs.splice(i, 1)
-
     activateTab(tabs[Math.max(0, i - 1)].id)
 }
 
 function normalize(input) {
-    if (!input.includes(".")) {
-        const engine = searchEngineSelect.value
-        return searchEngines[engine] + encodeURIComponent(input)
-    }
+    if (!input.includes(".")) return searchEngines[searchEngineSelect.value] + encodeURIComponent(input)
     if (!input.startsWith("http")) return "https://" + input
     return input
 }
@@ -484,72 +694,42 @@ function normalize(input) {
 function navigate(input, push = true) {
     const tab = getTab()
     if (!tab) return
-
     const url = normalize(input)
-
     if (push) {
         tab.history = tab.history.slice(0, tab.index + 1)
         tab.history.push(url)
         tab.index++
     }
-
     showLoader()
     tab.iframe.src = __uv$config.prefix + __uv$config.encodeUrl(url)
     urlInput.value = url
     ntp.style.display = "none"
-
     tab.iframe.onload = () => {
         hideLoader()
         tab.tabBtn.querySelector("span").textContent =
             tab.iframe.contentDocument?.title || new URL(url).hostname
     }
-
-    setTimeout(() => {
-        if (loader.classList.contains('active')) {
-            hideLoader()
-        }
-    }, 5000)
+    setTimeout(() => { if (loader.classList.contains('active')) hideLoader() }, 5000)
 }
 
-function getTab() {
-    return tabs.find(t => t.id === activeId)
-}
+function getTab() { return tabs.find(t => t.id === activeId) }
 
-back.onclick = () => {
-    const t = getTab()
-    if (!t || t.index <= 0) return
-    t.index--
-    navigate(t.history[t.index], false)
-}
-
-forward.onclick = () => {
-    const t = getTab()
-    if (!t || t.index >= t.history.length - 1) return
-    t.index++
-    navigate(t.history[t.index], false)
-}
-
-reload.onclick = () => {
-    const t = getTab()
-    if (!t) return
-    t.iframe.src = t.iframe.src
-}
-
-popout.onclick = () => {
-    const t = getTab()
-    if (!t) return
-    window.open(t.iframe.src, "_blank")
-}
-
-form.onsubmit = e => {
-    e.preventDefault()
-    if (urlInput.value.trim()) navigate(urlInput.value)
-}
-
+back.onclick = () => { const t = getTab(); if (!t || t.index <= 0) return; t.index--; navigate(t.history[t.index], false) }
+forward.onclick = () => { const t = getTab(); if (!t || t.index >= t.history.length - 1) return; t.index++; navigate(t.history[t.index], false) }
+reload.onclick = () => { const t = getTab(); if (!t) return; t.iframe.src = t.iframe.src }
+popout.onclick = () => { const t = getTab(); if (!t) return; window.open(t.iframe.src, "_blank") }
+form.onsubmit = e => { e.preventDefault(); if (urlInput.value.trim()) navigate(urlInput.value) }
 newTabBtn.onclick = () => createTab()
+
+document.getElementById('ntpForm').onsubmit = e => {
+    e.preventDefault()
+    const q = document.getElementById('ntpInput').value.trim()
+    if (!q) return
+    navigate('https://duckduckgo.com/?q=' + encodeURIComponent(q))
+    document.getElementById('ntpInput').value = ''
+}
 
 createTab()
 </script>
-
 </body>
 </html>
